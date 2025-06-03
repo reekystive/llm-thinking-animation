@@ -1,4 +1,6 @@
-# React + TypeScript + Vite
+# LLM Thinking Animation
+
+A ChatGPT-o3-like LLM thinking animation demo. Try it out at [https://reekyst.github.io/llm-thinking-animation/](https://reekyst.github.io/llm-thinking-animation/).
 
 ## About this template
 

@@ -20,6 +20,6 @@
     "rootDir": ".",
     "outDir": "./node_modules/.cache/tsc-node",
   },
-  "include": ["./*.ts", "./.*.ts", "./*.js", "./.*.js", "./*.mjs", "./.*.mjs", "./*.cjs", "./.*.cjs"],
+  "include": ["./*.ts", "./.*.ts", "./*.js", "./.*.js", "./*.mjs", "./.*.mjs", "./*.cjs", "./.*.cjs", "scripts"],
   "exclude": [],
 }
