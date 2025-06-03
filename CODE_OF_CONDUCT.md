@@ -37,12 +37,12 @@ export const Component: FC<Props> = ({ prop }) => {
 
 ## Import
 
-- Use `@/` alias to import project internal modules
+- Use `#src/` alias to import project internal modules. It's defined in package.json imports field.
 - Use `import type` syntax to import types
 
 ```tsx
-import type { ButtonProps } from '@/components/ui/button';
-import { cn } from '@/utils/component';
+import type { ButtonProps } from '#src/components/ui/button';
+import { cn } from '#src/utils/component';
 ```
 
 When importing files, use the shortest path, do not use `/index` or `/index.ts` suffix, corresponding to VSCode configuration
