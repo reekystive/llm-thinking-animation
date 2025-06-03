@@ -1,0 +1,16 @@
+words:
+  - avenir
+  - clsx
+  - grayscale
+  - nodenext
+  - reekystive
+  - Vite
+  - Vitest
+  - WCAG
+flagWords:
+  - blacklist -> blocklist
+  - whitelist -> allowlist
+suggestWords:
+  - colour -> color
+ignorePaths:
+  - cspell.config.yaml

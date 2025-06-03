@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": ["ESNext", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "types": ["vite/client", "react", "react-dom"],
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "resolvePackageJsonImports": true,
+    "resolvePackageJsonExports": true,
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationMap": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "useUnknownInCatchVariables": true,
+
+    "incremental": true,
+    "rootDir": "./src",
+    "outDir": "./node_modules/.cache/tsc-web",
+    // tsBuildInfoFile is generated at outDir/relativePathOfConfigFromRootDir/tsconfigName.tsbuildinfo by default,
+    // which is ./node_modules/.cache dir. explicitly set it to ./node_modules/.cache/tsc-web/tsconfig.web.tsbuildinfo here.
+    // https://github.com/microsoft/TypeScript/issues/30925#issuecomment-483371766
+    "tsBuildInfoFile": "./node_modules/.cache/tsc-web/tsconfig.web.tsbuildinfo",
+  },
+  "include": ["src"],
+  "exclude": ["**/node_modules/", "**/__tests__/"],
+}
