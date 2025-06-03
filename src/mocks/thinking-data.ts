@@ -101,6 +101,9 @@ It looks like gathering the full lineup for Osaka is turning into a challenge. I
 
 export const mockData: ThinkingData[] = [
   {
+    type: 'start-thinking',
+  },
+  {
     type: 'plaintext',
     title: 'Gathering Summer Sonic 2025 info',
     content: THINKING_CONTENT_1,
@@ -270,5 +273,8 @@ export const mockData: ThinkingData[] = [
     type: 'plaintext',
     title: 'Finalizing lineup and itinerary',
     content: THINKING_CONTENT_21,
+  },
+  {
+    type: 'end',
   },
 ];

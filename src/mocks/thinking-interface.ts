@@ -26,4 +26,10 @@ export type ThinkingData =
       type: 'search';
       title: string;
       websites: Website[];
+    }
+  | {
+      type: 'start-thinking';
+    }
+  | {
+      type: 'end';
     };
