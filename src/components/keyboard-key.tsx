@@ -1,7 +1,7 @@
 import { cn } from '#src/utils/cn.ts';
-import { FC } from 'react';
+import { FC, memo } from 'react';
 
-export const KeyboardKey: FC<{ keyText: string; className?: string }> = ({ keyText, className }) => {
+const KeyboardKey: FC<{ keyText: string; className?: string }> = ({ keyText, className }) => {
   return (
     <div className={cn('relative h-4 w-4', className)}>
       {/* Outer rounded rectangle - slightly visible at the bottom */}
@@ -13,3 +13,5 @@ export const KeyboardKey: FC<{ keyText: string; className?: string }> = ({ keyTe
     </div>
   );
 };
+
+export const MemoizedKeyboardKey = memo(KeyboardKey);

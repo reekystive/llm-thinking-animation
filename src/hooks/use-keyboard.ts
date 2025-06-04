@@ -1,51 +1,68 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { useEventCallback } from './use-event-callback.ts';
 
 export interface UseKeyboardProps {
   key: string;
   preventDefault?: boolean;
-  onKeyDown?: (event: KeyboardEvent) => void;
-  onKeyUp?: (event: KeyboardEvent) => void;
-  onKeyPress?: (event: KeyboardEvent) => void;
+  onKeyDown?: (withShift: boolean) => void;
+  onKeyUp?: () => void;
 }
 
 export const useKeyboard = (props: UseKeyboardProps) => {
+  const [activeWithoutShift, setActiveWithoutShift] = useState(false);
+  const [activeWithShift, setActiveWithShift] = useState(false);
+
+  const handleKeyDownCallback = useEventCallback(props.onKeyDown);
+  const handleKeyUpCallback = useEventCallback(props.onKeyUp);
+
+  const { key, preventDefault } = props;
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      console.log('handleKeyDown', event.key);
-      if (event.key === props.key) {
-        if (props.preventDefault) {
-          event.preventDefault();
-        }
-        props.onKeyDown?.(event);
+      if (event.key !== key) {
+        return;
+      }
+      if (event.repeat) {
+        if (preventDefault) event.preventDefault();
+        return;
+      }
+      if (preventDefault) {
+        event.preventDefault();
+      }
+      if (event.shiftKey) {
+        setActiveWithShift(true);
+        handleKeyDownCallback?.(true);
+      } else {
+        setActiveWithoutShift(true);
+        handleKeyDownCallback?.(false);
       }
     };
 
     const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.key === props.key) {
-        if (props.preventDefault) {
-          event.preventDefault();
-        }
-        props.onKeyUp?.(event);
+      if (event.key !== key && event.key !== 'Meta') {
+        return;
       }
-    };
-
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === props.key) {
-        if (props.preventDefault) {
-          event.preventDefault();
-        }
-        props.onKeyPress?.(event);
+      if (preventDefault) {
+        event.preventDefault();
       }
+      setActiveWithoutShift(false);
+      setActiveWithShift(false);
+      handleKeyUpCallback?.();
     };
 
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
-    window.addEventListener('keypress', handleKeyPress);
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('keypress', handleKeyPress);
+      setActiveWithoutShift(false);
+      setActiveWithShift(false);
     };
-  }, [props.preventDefault, props.onKeyDown, props.onKeyUp, props.onKeyPress, props.key, props]);
+  }, [key, handleKeyDownCallback, handleKeyUpCallback, preventDefault]);
+
+  return {
+    activeWithoutShift,
+    activeWithShift,
+  };
 };
