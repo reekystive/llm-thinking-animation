@@ -1,6 +1,6 @@
 import { ArrowLeftToLine, ArrowRightToLine, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { FC, ReactNode, useCallback } from 'react';
+import { FC, ReactNode, useCallback, useEffect, useRef } from 'react';
 
 import { useKeyboard } from '#src/hooks/use-keyboard.ts';
 import { cn } from '#src/utils/cn.ts';
@@ -46,6 +46,12 @@ export const PlaybackControl: FC<PlaybackControlProps> = ({
     autoSwitchIntervalInMs,
     onStepChange,
   });
+
+  const playRef = useRef(play);
+  // auto play on page load
+  useEffect(() => {
+    playRef.current();
+  }, []);
 
   const handlePlay = useCallback(() => {
     play();

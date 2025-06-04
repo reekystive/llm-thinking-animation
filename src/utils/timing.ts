@@ -1,7 +1,7 @@
 import { getContentTextAnimationDurationInSeconds } from '#src/components/thinking-box/utils.ts';
 import type { ThinkingData } from '#src/mocks/thinking-interface.ts';
 
-const DEFAULT_STEP_DURATION_IN_SECONDS = 1;
+const DEFAULT_STEP_DURATION_IN_SECONDS = 1.5;
 const PLAIN_TEXT_STEP_EXTRA_DURATION_IN_SECONDS = 0.5;
 
 export const getStepDurationInSeconds = (thinkingData?: ThinkingData) => {
