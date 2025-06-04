@@ -8,10 +8,6 @@ I'll need to search carefully for the full lineup and relevant info, then provid
 Once I get the details, I'll lay them out in markdown format with headers and give proper citations for the information, ensuring I meet the request as accurately as I can.
 `.trim();
 
-const THINKING_CONTENT_2 = `
-I'll start by recommending travel options from Singapore to Tokyo or Osaka. The user likely wants to arrive a few days before the festival
-`.trim();
-
 const THINKING_CONTENT_3 = `
 I'll start by recommending travel options from Singapore to Tokyo or Osaka. The user likely wants to arrive a few days before the festival, so I'll include that detail. For lodging, I'll suggest places close to Makuhari Messe/Zozo Marine Stadium (Tokyo) and Intex Osaka or Maishima Sonic Park. I'll also provide optional side trips and a recommended daily schedule. Since the user didn't request any flight booking or code, I'll focus on general travel suggestions. Markdown format will help organize the information neatly.
 `.trim();
@@ -31,10 +27,6 @@ Once I gather all the necessary information, I'll ensure the response smoothly b
 
 const THINKING_CONTENT_6 = `
 I need to search for several sources to confirm the 2025 Summer Sonic lineup. I've already found some information on Tokyo day 1, specifically for the Pacific stage, but I think I need to dig deeper by accessing additional pages to verify the full set of performers. I'll explore more of the official site for both Tokyo and Osaka stages to ensure I have the complete lineup. Let's open those pages and double-check everything.
-`.trim();
-
-const THINKING_CONTENT_7 = `
-I'm checking multiple sources for the Summer Sonic 2025 dates. Sites like Songkick and Japan Travel show August
 `.trim();
 
 const THINKING_CONTENT_8 = `
@@ -111,11 +103,6 @@ export const mockData: ThinkingData[] = [
   {
     type: 'plaintext',
     title: 'Planning travel itinerary',
-    content: THINKING_CONTENT_2,
-  },
-  {
-    type: 'plaintext',
-    title: 'Considering itinerary and lineup details',
     content: THINKING_CONTENT_3,
   },
   {
@@ -168,11 +155,6 @@ export const mockData: ThinkingData[] = [
     type: 'plaintext',
     title: 'Verifying Summer Sonic lineup',
     content: THINKING_CONTENT_6,
-  },
-  {
-    type: 'plaintext',
-    title: 'Verifying event dates',
-    content: THINKING_CONTENT_7,
   },
   {
     type: 'plaintext',

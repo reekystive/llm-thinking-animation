@@ -1,9 +1,12 @@
-import { createContext, FC, ReactNode, useContext, useState } from 'react';
+import { createContext, FC, ReactNode, useCallback, useContext, useState } from 'react';
 
 const useAppAnimationControlValues = () => {
   const [appAnimationSpeedScale, setAppAnimationSpeedScale] = useState(1);
   const [showOutlines, setShowOutlines] = useState(false);
-  const getAnimationDuration = (duration: number) => duration / appAnimationSpeedScale;
+  const getAnimationDuration = useCallback(
+    (duration: number) => duration / appAnimationSpeedScale,
+    [appAnimationSpeedScale]
+  );
   return {
     appAnimationSpeedScale,
     setAppAnimationSpeedScale,
