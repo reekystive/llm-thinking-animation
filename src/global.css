@@ -40,3 +40,7 @@
     padding: 0;
   }
 }
+
+@utility trim-both {
+  text-box-trim: trim-both;
+}

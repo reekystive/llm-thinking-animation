@@ -102,7 +102,7 @@ export const PlaybackControl: FC<PlaybackControlProps> = ({
   });
 
   return (
-    <div className="relative flex flex-row items-stretch justify-center overflow-clip rounded-lg border border-gray-200 bg-white p-4 sm:justify-between dark:border-gray-700 dark:bg-gray-800">
+    <div className="relative flex flex-row items-stretch justify-center overflow-clip rounded-lg border border-gray-200 bg-white p-2 sm:justify-between sm:p-4 dark:border-gray-700 dark:bg-gray-800">
       <div className="absolute right-0 bottom-0 left-0 h-[1px] [mask:linear-gradient(to_right,transparent_3%,white_10%,white_90%,transparent_97%)]">
         <motion.div
           className="h-full bg-gradient-to-r from-blue-400 to-purple-400 [mask:linear-gradient(to_right,white_calc(100%-10px),transparent_100%)] dark:from-blue-500 dark:to-purple-500"

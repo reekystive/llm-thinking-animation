@@ -5,9 +5,10 @@ import type {
   StartThinkingData,
   ThinkingData,
 } from '#src/mocks/thinking-interface.ts';
+import { useAppAnimationControl } from '#src/providers/animation-control.tsx';
 import { cn } from '#src/utils/cn.ts';
 import { AnimatePresence, motion } from 'motion/react';
-import { FC } from 'react';
+import { FC, forwardRef } from 'react';
 import { Paragraphs } from './paragraph.tsx';
 
 interface ThinkingBoxProps {
@@ -17,9 +18,15 @@ interface ThinkingBoxProps {
 }
 
 export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, className }) => {
+  const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
+
   return (
-    <div className={cn('relative border border-red-300', className)}>
-      <AnimatePresence mode="sync">
+    <motion.div
+      className={cn('relative', showOutlines && 'outline outline-red-300/50', className)}
+      layout
+      transition={{ layout: { duration: s(0.4), type: 'spring', bounce: 0 } }}
+    >
+      <AnimatePresence initial={false} mode="popLayout">
         {(() => {
           switch (currentData?.type) {
             case 'start-thinking':
@@ -36,65 +43,94 @@ export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, cl
           }
         })()}
       </AnimatePresence>
-    </div>
-  );
-};
-
-const ThinkingStepStartThinking: FC<{ data: StartThinkingData }> = () => {
-  return (
-    <motion.div
-      className="flex w-fit flex-col items-start rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-900"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.5, type: 'spring', bounce: 0 }}
-    >
-      <div>Thinking</div>
     </motion.div>
   );
 };
 
-const ThinkingStepEnd: FC<{ data: EndThinkingData }> = () => {
-  return (
-    <motion.div
-      className="flex w-fit flex-col items-start rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-900"
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.5, type: 'spring', bounce: 0 }}
-    >
-      <div>End</div>
-    </motion.div>
-  );
-};
+const ThinkingStepStartThinking = forwardRef<HTMLDivElement, { data: StartThinkingData }>(
+  function ThinkingStepStartThinking(_props, ref) {
+    const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
+    return (
+      <motion.div
+        className={cn(
+          'flex w-fit flex-col items-start rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-900',
+          showOutlines && 'outline outline-green-400/50'
+        )}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 0 }}
+        transition={{ duration: s(0.5), type: 'spring', bounce: 0 }}
+        layout
+        ref={ref}
+      >
+        <div>Thinking</div>
+      </motion.div>
+    );
+  }
+);
 
-const ThinkingStepPlaintext: FC<{ data: PlaintextData }> = ({ data }) => {
+const ThinkingStepEnd = forwardRef<HTMLDivElement, { data: EndThinkingData }>(function ThinkingStepEnd(_props, ref) {
+  const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
   return (
     <motion.div
-      className="flex w-fit flex-col items-start rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-900"
+      className={cn(
+        'flex w-fit flex-col items-start rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-900',
+        showOutlines && 'outline outline-blue-400/50'
+      )}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.5, type: 'spring', bounce: 0 }}
+      exit={{ opacity: 0, y: 0 }}
+      transition={{ duration: s(0.5), type: 'spring', bounce: 0 }}
+      layout
+      ref={ref}
     >
-      <div>Plaintext</div>
-      <div className="flex flex-col gap-2">
-        <Paragraphs contentText={data.content} />
-      </div>
+      <div>Thought for 2m 7s</div>
     </motion.div>
   );
-};
+});
 
-const ThinkingStepSearch: FC<{ data: SearchData }> = () => {
+const ThinkingStepPlaintext = forwardRef<HTMLDivElement, { data: PlaintextData }>(
+  function ThinkingStepPlaintext(props, ref) {
+    const { data } = props;
+    const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
+    return (
+      <motion.div
+        className={cn(
+          'flex w-fit flex-col items-start rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-900',
+          showOutlines && 'outline outline-yellow-400/50'
+        )}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: 0 }}
+        transition={{ duration: s(0.5), type: 'spring', bounce: 0 }}
+        layout
+        ref={ref}
+      >
+        <div className="mb-2 font-medium">{data.title}</div>
+        <div className="flex flex-col gap-2">
+          <Paragraphs contentText={data.content} />
+        </div>
+      </motion.div>
+    );
+  }
+);
+
+const ThinkingStepSearch = forwardRef<HTMLDivElement, { data: SearchData }>(function ThinkingStepSearch(_props, ref) {
+  const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
   return (
     <motion.div
-      className="flex w-fit flex-col items-start rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-900"
+      className={cn(
+        'flex w-fit flex-col items-start rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-900',
+        showOutlines && 'outline outline-purple-400/50'
+      )}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.5, type: 'spring', bounce: 0 }}
+      exit={{ opacity: 0, y: 0 }}
+      transition={{ duration: s(0.5), type: 'spring', bounce: 0 }}
+      layout
+      ref={ref}
     >
-      <div>Search</div>
+      <div>Searching the Web</div>
     </motion.div>
   );
-};
+});
