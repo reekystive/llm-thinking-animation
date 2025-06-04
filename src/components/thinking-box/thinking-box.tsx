@@ -7,6 +7,7 @@ import type {
 } from '#src/mocks/thinking-interface.ts';
 import { useAppAnimationControl } from '#src/providers/animation-control.tsx';
 import { cn } from '#src/utils/cn.ts';
+import { useMeasure } from '@react-hookz/web';
 import { AnimatePresence, motion } from 'motion/react';
 import { FC, forwardRef } from 'react';
 import { Paragraphs } from './paragraph.tsx';
@@ -20,57 +21,111 @@ interface ThinkingBoxProps {
 
 export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, className }) => {
   const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
-  const small = currentData?.type === 'start-thinking' || currentData?.type === 'end';
+  const [contentMeasure, contentMeasureRef] = useMeasure<HTMLDivElement>(true);
+  const [containerMeasure, containerMeasureRef] = useMeasure<HTMLDivElement>(true);
+
+  const SHOW_PHANTOM_ELEMENT = false as boolean;
+  const isSmall = currentData?.type === 'start-thinking' || currentData?.type === 'end';
+  const hideThinkingBoxBorder = currentData?.type === 'start-thinking' || currentData?.type === 'end';
+
   return (
-    <motion.div
-      className={cn(
-        'relative overflow-clip rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 dark:border-gray-700 dark:bg-gray-900',
-        showOutlines && 'outline outline-red-300/50',
-        small && 'w-fit',
-        className
-      )}
-      layout
-      layoutId="thinking-box"
-      transition={{ layout: { duration: s(0.4), type: 'spring', bounce: 0 } }}
-    >
-      <AnimatePresence initial={false} mode="popLayout">
-        {(() => {
-          switch (currentData?.type) {
-            case 'start-thinking':
-              return (
-                <ThinkingStepStartThinking
-                  data={currentData}
-                  stepKey={`start-thinking-${currentStep}`}
-                  key={`start-thinking-${currentStep}`}
-                />
-              );
-            case 'end':
-              return <ThinkingStepEnd data={currentData} stepKey={`end-${currentStep}`} key={`end-${currentStep}`} />;
-            case 'plaintext':
-              return (
-                <ThinkingStepPlaintext
-                  data={currentData}
-                  stepKey={`plaintext-${currentStep}`}
-                  key={`plaintext-${currentStep}`}
-                />
-              );
-            case 'search':
-              return (
-                <ThinkingStepSearch
-                  data={currentData}
-                  stepKey={`search-${currentStep}`}
-                  key={`search-${currentStep}`}
-                />
-              );
-            default:
-              currentData satisfies undefined;
-              return null;
-          }
-        })()}
-      </AnimatePresence>
-    </motion.div>
+    <>
+      {/* phantom element for measuring the size of the thinking box */}
+      <div
+        ref={containerMeasureRef}
+        className={cn(
+          'relative w-full',
+          !SHOW_PHANTOM_ELEMENT && 'invisible overflow-clip',
+          SHOW_PHANTOM_ELEMENT && 'outline outline-red-400/50'
+        )}
+      >
+        <div
+          className={cn(
+            isSmall ? 'w-fit' : 'w-full',
+            !SHOW_PHANTOM_ELEMENT && 'absolute',
+            SHOW_PHANTOM_ELEMENT && 'outline outline-blue-400/50'
+          )}
+          ref={contentMeasureRef}
+        >
+          <ThinkingStep data={currentData} currentStep={currentStep} key={currentStep} />
+        </div>
+      </div>
+
+      {/* real element */}
+      <motion.div
+        className={cn('relative overflow-clip rounded-lg')}
+        animate={{
+          height: contentMeasure?.height,
+          width: contentMeasure?.width,
+        }}
+        transition={{
+          duration: s(0.5),
+          type: 'spring',
+          bounce: 0,
+        }}
+      >
+        <div
+          className={cn(
+            'absolute inset-0 rounded-lg outline-1 -outline-offset-1 transition-all duration-300 ease-out',
+            hideThinkingBoxBorder && 'outline-transparent',
+            !hideThinkingBoxBorder && 'outline-gray-300/90 dark:outline-gray-700'
+          )}
+        ></div>
+        <motion.div
+          className={cn('relative', showOutlines && 'outline outline-red-300/50', className)}
+          style={{ width: containerMeasure?.width }}
+          layout
+          transition={{
+            duration: s(0.5),
+            type: 'spring',
+            bounce: 0,
+          }}
+        >
+          <AnimatePresence initial={false} mode="popLayout">
+            <ThinkingStep data={currentData} currentStep={currentStep} key={currentStep} />
+          </AnimatePresence>
+        </motion.div>
+      </motion.div>
+    </>
   );
 };
+
+const ThinkingStep = forwardRef<HTMLDivElement, { data: ThinkingData | undefined; currentStep: number }>(
+  function ThinkingStep(props, ref) {
+    const { data, currentStep } = props;
+    return (() => {
+      switch (data?.type) {
+        case 'start-thinking':
+          return (
+            <ThinkingStepStartThinking
+              ref={ref}
+              data={data}
+              stepKey={`start-thinking-${currentStep}`}
+              key={`start-thinking-${currentStep}`}
+            />
+          );
+        case 'end':
+          return <ThinkingStepEnd ref={ref} data={data} stepKey={`end-${currentStep}`} key={`end-${currentStep}`} />;
+        case 'plaintext':
+          return (
+            <ThinkingStepPlaintext
+              ref={ref}
+              data={data}
+              stepKey={`plaintext-${currentStep}`}
+              key={`plaintext-${currentStep}`}
+            />
+          );
+        case 'search':
+          return (
+            <ThinkingStepSearch ref={ref} data={data} stepKey={`search-${currentStep}`} key={`search-${currentStep}`} />
+          );
+        default:
+          data satisfies undefined;
+          return null;
+      }
+    })();
+  }
+);
 
 const ThinkingStepStartThinking = forwardRef<HTMLDivElement, { data: StartThinkingData; stepKey: string }>(
   function ThinkingStepStartThinking(props, ref) {
@@ -78,7 +133,7 @@ const ThinkingStepStartThinking = forwardRef<HTMLDivElement, { data: StartThinki
     const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
     return (
       <motion.div
-        className={cn('flex w-fit flex-col items-start', showOutlines && 'outline outline-green-400/50')}
+        className={cn('flex w-fit flex-col items-start px-4 py-3', showOutlines && 'outline outline-yellow-400/50')}
         initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
         exit={{ opacity: 0, y: 0, filter: 'blur(5px)' }}
@@ -99,7 +154,7 @@ const ThinkingStepEnd = forwardRef<HTMLDivElement, { data: EndThinkingData; step
     const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
     return (
       <motion.div
-        className={cn('flex w-fit flex-col items-start', showOutlines && 'outline outline-blue-400/50')}
+        className={cn('flex w-fit flex-col items-start px-4 py-3', showOutlines && 'outline outline-yellow-400/50')}
         initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
         exit={{ opacity: 0, y: 0, filter: 'blur(5px)' }}
@@ -120,7 +175,7 @@ const ThinkingStepPlaintext = forwardRef<HTMLDivElement, { data: PlaintextData; 
     const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
     return (
       <motion.div
-        className={cn('flex flex-col items-start', showOutlines && 'outline outline-yellow-400/50')}
+        className={cn('flex flex-col items-start px-4 py-3', showOutlines && 'outline outline-yellow-400/50')}
         initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
         exit={{ opacity: 0, y: 0, filter: 'blur(5px)' }}
@@ -144,7 +199,7 @@ const ThinkingStepSearch = forwardRef<HTMLDivElement, { data: SearchData; stepKe
     const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
     return (
       <motion.div
-        className={cn('flex flex-col items-start', showOutlines && 'outline outline-purple-400/50')}
+        className={cn('flex flex-col items-start px-4 py-3', showOutlines && 'outline outline-yellow-400/50')}
         initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
         exit={{ opacity: 0, y: 0, filter: 'blur(5px)' }}
