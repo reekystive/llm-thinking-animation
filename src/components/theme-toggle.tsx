@@ -2,7 +2,7 @@ import { useEventCallback } from '#src/hooks/use-event-callback.ts';
 import { useMediaQuery } from '#src/hooks/use-media-query.ts';
 import { useStateWithRef } from '#src/hooks/use-state-with-ref.ts';
 import { Moon, Sun } from 'lucide-react';
-import { FC, useEffect } from 'react';
+import { FC, memo, useEffect } from 'react';
 import { getCurrentTheme, ResolvedTheme, resolveTheme, toggleTheme, type Theme } from '../utils/theme';
 
 export const ThemeToggle: FC = () => {
@@ -70,3 +70,5 @@ export const ThemeToggle: FC = () => {
     </button>
   );
 };
+
+export const MemoizedThemeToggle = memo(ThemeToggle);

@@ -1,8 +1,13 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { scan } from 'react-scan';
 import { App } from './app.tsx';
 import './global.css';
 import { initTheme } from './utils/theme.ts';
+
+if (import.meta.env.DEV) {
+  scan({ enabled: true });
+}
 
 initTheme();
 

@@ -111,6 +111,7 @@ export const PlaybackControl: FC<PlaybackControlProps> = ({
           transition={{ duration: 0.3, ease: 'easeOut' }}
         />
       </div>
+
       <div className={'flex flex-row items-center justify-end gap-2'}>
         <NavigateButton
           onClick={() => setCurrentStepAndPause(0)}
@@ -150,7 +151,7 @@ export const PlaybackControl: FC<PlaybackControlProps> = ({
                   initial={{ opacity: 0, scale: 0.7, filter: 'blur(2px)' }}
                   animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
                   exit={{ opacity: 0, scale: 0.7, filter: 'blur(2px)' }}
-                  transition={{ duration: 0.2, ease: '' }}
+                  transition={{ duration: 0.2 }}
                   className="absolute inset-0"
                 >
                   <Pause className="h-4 w-4" />
@@ -161,7 +162,7 @@ export const PlaybackControl: FC<PlaybackControlProps> = ({
                   initial={{ opacity: 0, scale: 0.7, filter: 'blur(2px)' }}
                   animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
                   exit={{ opacity: 0, scale: 0.7, filter: 'blur(2px)' }}
-                  transition={{ duration: 0.2, ease: 'circOut' }}
+                  transition={{ duration: 0.2 }}
                   className="absolute inset-0"
                 >
                   <Play className="h-4 w-4" />
@@ -193,6 +194,7 @@ export const PlaybackControl: FC<PlaybackControlProps> = ({
           <ArrowRightToLine className="h-4 w-4 text-gray-600 dark:text-gray-300" />
         </NavigateButton>
       </div>
+
       {/* Keyboard Shortcuts Info */}
       <div className="hidden flex-col justify-end sm:flex">
         <div className="text-xs text-gray-500 dark:text-gray-400">

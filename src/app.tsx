@@ -1,6 +1,6 @@
 import { FC, useCallback, useState } from 'react';
 import { PlaybackControl } from './components/playback-control/playback-control';
-import { ThemeToggle } from './components/theme-toggle';
+import { MemoizedThemeToggle } from './components/theme-toggle';
 import { ThinkingBox } from './components/thinking-box';
 import { mockData } from './mocks/thinking-data';
 import type { ThinkingData } from './mocks/thinking-interface';
@@ -17,7 +17,7 @@ export const App: FC = () => {
   return (
     <div className="relative flex min-h-[100dvh] w-full flex-col items-center justify-start overflow-clip bg-gray-100 px-2 py-4 transition-colors sm:px-6 sm:py-6 dark:bg-slate-900">
       <div className="absolute top-2 right-2 sm:top-6 sm:right-6">
-        <ThemeToggle />
+        <MemoizedThemeToggle />
       </div>
       <h1 className="mb-2 px-12 text-center text-xl font-bold text-gray-900 sm:px-0 sm:text-3xl dark:text-gray-100">
         LLM Thinking Animation

@@ -67,25 +67,25 @@ export const useAutoPlay = (props: UseAutoPlayProps) => {
   }, []);
 
   const play = useCallback(() => {
-    if (!isPlaying && currentStep === props.totalSteps - 2) {
-      setCurrentStepAndPause(props.totalSteps - 1);
+    if (!isPlaying && currentStep === totalSteps - 2) {
+      setCurrentStepAndPause(totalSteps - 1);
       return;
     }
-    if (!isPlaying && currentStep === props.totalSteps - 1) {
+    if (!isPlaying && currentStep === totalSteps - 1) {
       setCurrentStepAndPause(0);
       setIsPlaying(true);
       return;
     }
     setIsPlaying(true);
-  }, [isPlaying, currentStep, props.totalSteps, setCurrentStepAndPause]);
+  }, [isPlaying, currentStep, totalSteps, setCurrentStepAndPause]);
 
   const previousStep = useCallback(() => {
     setCurrentStepAndPause(Math.max(0, currentStep - 1));
   }, [currentStep, setCurrentStepAndPause]);
 
   const nextStep = useCallback(() => {
-    setCurrentStepAndPause(Math.min(props.totalSteps - 1, currentStep + 1));
-  }, [currentStep, props.totalSteps, setCurrentStepAndPause]);
+    setCurrentStepAndPause(Math.min(totalSteps - 1, currentStep + 1));
+  }, [currentStep, totalSteps, setCurrentStepAndPause]);
 
   return {
     currentStep,
