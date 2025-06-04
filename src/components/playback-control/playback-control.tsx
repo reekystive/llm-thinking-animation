@@ -27,7 +27,7 @@ const getVisualProgress = (currentStep: number, totalSteps: number) => {
 
 export const PlaybackControl: FC<PlaybackControlProps> = ({
   totalSteps,
-  autoSwitchIntervalInMs: autoPlaySpeed = 2000,
+  autoSwitchIntervalInMs = 2000,
   onStepChange,
 }) => {
   const {
@@ -43,7 +43,7 @@ export const PlaybackControl: FC<PlaybackControlProps> = ({
   } = useAutoPlay({
     initialStep: 0,
     totalSteps,
-    autoSwitchIntervalInMs: autoPlaySpeed,
+    autoSwitchIntervalInMs,
     onStepChange,
   });
 

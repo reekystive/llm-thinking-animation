@@ -42,8 +42,6 @@ export const useAutoPlay = (props: UseAutoPlayProps) => {
       });
     };
 
-    next();
-
     intervalRef.current = setInterval(next, autoSwitchIntervalInMs);
 
     return () => {
