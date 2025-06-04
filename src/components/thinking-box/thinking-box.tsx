@@ -10,6 +10,7 @@ import { cn } from '#src/utils/cn.ts';
 import { AnimatePresence, motion } from 'motion/react';
 import { FC, forwardRef } from 'react';
 import { Paragraphs } from './paragraph.tsx';
+import { SearchItem } from './search-item.tsx';
 
 interface ThinkingBoxProps {
   currentData: ThinkingData | undefined;
@@ -63,7 +64,7 @@ const ThinkingStepStartThinking = forwardRef<HTMLDivElement, { data: StartThinki
         layout
         ref={ref}
       >
-        <div>Thinking</div>
+        <div className="font-medium">Thinking</div>
       </motion.div>
     );
   }
@@ -84,7 +85,7 @@ const ThinkingStepEnd = forwardRef<HTMLDivElement, { data: EndThinkingData }>(fu
       layout
       ref={ref}
     >
-      <div>Thought for 2m 7s</div>
+      <div className="font-medium">Thought for 2m 7s</div>
     </motion.div>
   );
 });
@@ -115,8 +116,9 @@ const ThinkingStepPlaintext = forwardRef<HTMLDivElement, { data: PlaintextData }
   }
 );
 
-const ThinkingStepSearch = forwardRef<HTMLDivElement, { data: SearchData }>(function ThinkingStepSearch(_props, ref) {
+const ThinkingStepSearch = forwardRef<HTMLDivElement, { data: SearchData }>(function ThinkingStepSearch(props, ref) {
   const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
+  const { data } = props;
   return (
     <motion.div
       className={cn(
@@ -130,7 +132,12 @@ const ThinkingStepSearch = forwardRef<HTMLDivElement, { data: SearchData }>(func
       layout
       ref={ref}
     >
-      <div>Searching the Web</div>
+      <div className="mb-2 font-medium">Searching the Web</div>
+      <div className="flex flex-wrap gap-1">
+        {data.websites.map((website, index) => (
+          <SearchItem data={website} key={`${website.url}-${index}`} />
+        ))}
+      </div>
     </motion.div>
   );
 });
