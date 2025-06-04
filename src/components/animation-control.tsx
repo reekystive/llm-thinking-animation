@@ -37,8 +37,8 @@ export const AnimationControl: FC<{ className?: string }> = ({ className }) => {
         onClick={() => setShowOutlines(!showOutlines)}
       >
         <span className="trim-both">{showOutlines ? 'Hide Outlines' : 'Show Outlines'}</span>
-        <span className="trim-both invisible h-0">Show Outlines</span>
-        <span className="trim-both invisible h-0">Hide Outlines</span>
+        <span className="trim-both invisible h-0 overflow-clip leading-0">Show Outlines</span>
+        <span className="trim-both invisible h-0 overflow-clip leading-0">Hide Outlines</span>
       </button>
     </div>
   );
