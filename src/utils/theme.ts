@@ -2,19 +2,23 @@ import { localStorageWithCache } from './local-storage.ts';
 
 export const themes = ['light', 'dark', 'system'] as const;
 export type Theme = (typeof themes)[number];
+export type ResolvedTheme = 'light' | 'dark';
 
 export interface ThemeState {
-  theme: 'light' | 'dark' | 'system';
-  resolvedTheme: 'light' | 'dark';
+  theme: Theme;
+  resolvedTheme: ResolvedTheme;
 }
 
-export const resolveTheme = (theme: Theme): ThemeState => {
+export const getSystemTheme = (): ResolvedTheme => {
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  return mediaQuery.matches ? 'dark' : 'light';
+};
+
+export const resolveTheme = (theme: Theme, systemTheme: ResolvedTheme): ThemeState => {
   if (theme === 'system') {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const currentSystemTheme = mediaQuery.matches ? 'dark' : 'light';
     return {
       theme: 'system',
-      resolvedTheme: currentSystemTheme,
+      resolvedTheme: systemTheme,
     };
   }
   return {
@@ -29,7 +33,7 @@ export const initTheme = (): ThemeState => {
     localStorageWithCache.setItem('theme', 'system');
   }
   const theme = saved ?? 'system';
-  const themeState = resolveTheme(theme);
+  const themeState = resolveTheme(theme, getSystemTheme());
   const root = window.document.documentElement;
   const dataTheme = root.getAttribute('data-theme');
   if (dataTheme === themeState.resolvedTheme) {
@@ -43,7 +47,7 @@ export const initTheme = (): ThemeState => {
 export const toggleTheme = (theme: Theme): ThemeState => {
   const root = window.document.documentElement;
   localStorageWithCache.setItem('theme', theme);
-  const themeState = resolveTheme(theme);
+  const themeState = resolveTheme(theme, getSystemTheme());
   root.setAttribute('data-theme', themeState.resolvedTheme);
   root.style.setProperty('color-scheme', themeState.resolvedTheme satisfies 'light' | 'dark');
   return themeState;
@@ -52,7 +56,7 @@ export const toggleTheme = (theme: Theme): ThemeState => {
 export const getCurrentTheme = (): ThemeState => {
   const saved = localStorageWithCache.getItem('theme');
   if (!saved) {
-    return resolveTheme('system');
+    return resolveTheme('system', getSystemTheme());
   }
-  return resolveTheme(saved);
+  return resolveTheme(saved, getSystemTheme());
 };
