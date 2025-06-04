@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
+import { ArrowLeftToLine, ArrowRightToLine, ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { FC, useCallback } from 'react';
 
@@ -29,7 +29,17 @@ export const PlaybackControl: FC<PlaybackControlProps> = ({
   autoSwitchIntervalInMs: autoPlaySpeed = 2000,
   onStepChange,
 }) => {
-  const { currentStep, isPlaying, pause, play, previousStep, nextStep, isFirstStep, isLastStep } = useAutoPlay({
+  const {
+    currentStep,
+    isPlaying,
+    pause,
+    play,
+    previousStep,
+    nextStep,
+    isFirstStep,
+    isLastStep,
+    setCurrentStepAndPause,
+  } = useAutoPlay({
     initialStep: 0,
     totalSteps,
     autoSwitchIntervalInMs: autoPlaySpeed,
@@ -55,13 +65,25 @@ export const PlaybackControl: FC<PlaybackControlProps> = ({
   useKeyboard({
     key: 'ArrowLeft',
     preventDefault: true,
-    onKeyDown: handlePreviousClick,
+    onKeyDown: (e) => {
+      if (e.metaKey) {
+        setCurrentStepAndPause(0);
+      } else {
+        handlePreviousClick();
+      }
+    },
   });
 
   useKeyboard({
     key: 'ArrowRight',
     preventDefault: true,
-    onKeyDown: handleNextClick,
+    onKeyDown: (e) => {
+      if (e.metaKey) {
+        setCurrentStepAndPause(totalSteps - 1);
+      } else {
+        handleNextClick();
+      }
+    },
   });
 
   const handleSpacePress = useCallback(() => {
@@ -79,7 +101,7 @@ export const PlaybackControl: FC<PlaybackControlProps> = ({
   });
 
   return (
-    <div className="relative flex flex-row items-stretch justify-between overflow-clip rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
+    <div className="relative flex flex-row items-stretch justify-center overflow-clip rounded-lg border border-gray-200 bg-white p-4 sm:justify-between dark:border-gray-700 dark:bg-gray-800">
       <div className="absolute right-0 bottom-0 left-0 h-[1px] [mask:linear-gradient(to_right,transparent_3%,white_10%,white_90%,transparent_97%)]">
         <motion.div
           className="h-full bg-gradient-to-r from-blue-400 to-purple-400 [mask:linear-gradient(to_right,white_calc(100%-10px),transparent_100%)] dark:from-blue-500 dark:to-purple-500"
@@ -90,6 +112,16 @@ export const PlaybackControl: FC<PlaybackControlProps> = ({
       </div>
 
       <div className="flex flex-row items-center justify-end gap-2">
+        <button
+          onClick={() => setCurrentStepAndPause(totalSteps - 1)}
+          disabled={isFirstStep}
+          className="cursor-pointer rounded-full bg-gray-100 p-2 transition-colors outline-none hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-700 dark:hover:bg-gray-600"
+          aria-label="First Step"
+          title="First Step"
+        >
+          <ArrowLeftToLine className="h-4 w-4 text-gray-600 dark:text-gray-300" />
+        </button>
+
         <button
           onClick={handlePreviousClick}
           disabled={isFirstStep}
@@ -142,10 +174,20 @@ export const PlaybackControl: FC<PlaybackControlProps> = ({
         >
           <ChevronRight className="h-4 w-4 text-gray-600 dark:text-gray-300" />
         </button>
+
+        <button
+          onClick={() => setCurrentStepAndPause(totalSteps - 1)}
+          disabled={isLastStep}
+          className="cursor-pointer rounded-full bg-gray-100 p-2 transition-colors outline-none hover:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-gray-700 dark:hover:bg-gray-600"
+          aria-label="Last Step"
+          title="Last Step"
+        >
+          <ArrowRightToLine className="h-4 w-4 text-gray-600 dark:text-gray-300" />
+        </button>
       </div>
 
       {/* Keyboard Shortcuts Info */}
-      <div className="flex flex-col justify-end">
+      <div className="hidden flex-col justify-end sm:flex">
         <div className="text-xs text-gray-500 dark:text-gray-400">
           <div className="inline-flex gap-1 px-1 align-bottom">
             <KeyboardKey className="block" keyText="←" />
