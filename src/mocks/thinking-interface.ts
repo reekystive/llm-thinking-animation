@@ -16,20 +16,24 @@ export interface Website {
   faviconUrl?: string;
 }
 
-export type ThinkingData =
-  | {
-      type: 'plaintext';
-      title: string;
-      content: string;
-    }
-  | {
-      type: 'search';
-      title: string;
-      websites: Website[];
-    }
-  | {
-      type: 'start-thinking';
-    }
-  | {
-      type: 'end';
-    };
+export interface StartThinkingData {
+  type: 'start-thinking';
+}
+
+export interface EndThinkingData {
+  type: 'end';
+}
+
+export interface PlaintextData {
+  type: 'plaintext';
+  title: string;
+  content: string;
+}
+
+export interface SearchData {
+  type: 'search';
+  title: string;
+  websites: Website[];
+}
+
+export type ThinkingData = StartThinkingData | EndThinkingData | PlaintextData | SearchData;

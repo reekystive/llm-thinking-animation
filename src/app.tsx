@@ -1,7 +1,8 @@
 import { FC, useCallback, useState } from 'react';
 import { PlaybackControl } from './components/playback-control/playback-control';
+import { Signature } from './components/signature.tsx';
 import { MemoizedThemeToggle } from './components/theme-toggle';
-import { ThinkingBox } from './components/thinking-box';
+import { ThinkingBox } from './components/thinking-box/thinking-box';
 import { mockData } from './mocks/thinking-data';
 import type { ThinkingData } from './mocks/thinking-interface';
 
@@ -26,10 +27,13 @@ export const App: FC = () => {
         <p className="text-gray-600 dark:text-gray-400">A ChatGPT-o3-like LLM thinking animation</p>
       </div>
       <div className="mb-2 w-full max-w-2xl sm:mb-4">
-        <PlaybackControl totalSteps={mockData.length} autoSwitchIntervalInMs={2000} onStepChange={handleStepChange} />
+        <PlaybackControl totalSteps={mockData.length} autoSwitchIntervalInMs={3000} onStepChange={handleStepChange} />
       </div>
       <div className="w-full max-w-2xl">
         <ThinkingBox currentData={currentData} currentStep={currentStep} />
+      </div>
+      <div className="mt-2 flex w-full items-center justify-center sm:mt-4">
+        <Signature className="opacity-80" />
       </div>
     </div>
   );
