@@ -1,5 +1,5 @@
 import { cn } from '#src/utils/cn.ts';
-import { FC } from 'react';
+import { FC, memo } from 'react';
 
 export const Signature: FC<{ className?: string }> = ({ className }) => {
   return (
@@ -19,3 +19,5 @@ export const Signature: FC<{ className?: string }> = ({ className }) => {
     </div>
   );
 };
+
+export const MemoizedSignature = memo(Signature);

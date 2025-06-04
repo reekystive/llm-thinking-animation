@@ -1,7 +1,7 @@
 import { FC, useCallback, useState } from 'react';
-import { AnimationControl } from './components/animation-control.tsx';
+import { MemoizedAnimationControl } from './components/animation-control.tsx';
 import { PlaybackControl } from './components/playback-control/playback-control';
-import { Signature } from './components/signature.tsx';
+import { MemoizedSignature } from './components/signature.tsx';
 import { MemoizedThemeToggle } from './components/theme-toggle';
 import { ThinkingBox } from './components/thinking-box/thinking-box';
 import { mockData } from './mocks/thinking-data';
@@ -31,7 +31,7 @@ export const App: FC = () => {
       </div>
 
       <div className="mb-2 flex w-full max-w-2xl flex-col items-center gap-2 sm:mb-4">
-        <AnimationControl />
+        <MemoizedAnimationControl />
       </div>
 
       <div className="mb-2 w-full max-w-2xl sm:mb-4">
@@ -43,7 +43,7 @@ export const App: FC = () => {
       </div>
 
       <div className="mt-2 flex w-full items-center justify-center sm:mt-4">
-        <Signature className="opacity-80" />
+        <MemoizedSignature className="opacity-80" />
       </div>
     </div>
   );

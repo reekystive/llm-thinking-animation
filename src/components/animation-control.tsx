@@ -1,6 +1,6 @@
 import { useAppAnimationControl } from '#src/providers/animation-control.tsx';
 import { cn } from '#src/utils/cn.ts';
-import { FC, useMemo } from 'react';
+import { FC, memo, useMemo } from 'react';
 
 export const AnimationControl: FC<{ className?: string }> = ({ className }) => {
   const { appAnimationSpeedScale, setAppAnimationSpeedScale, showOutlines, setShowOutlines } = useAppAnimationControl();
@@ -43,3 +43,5 @@ export const AnimationControl: FC<{ className?: string }> = ({ className }) => {
     </div>
   );
 };
+
+export const MemoizedAnimationControl = memo(AnimationControl);
