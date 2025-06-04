@@ -60,7 +60,7 @@ const eslintConfig = [
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
     settings: {
-      react: { version: '18.3.1' },
+      react: { version: '19.1.0' },
     },
   },
   {
