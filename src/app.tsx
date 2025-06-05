@@ -6,11 +6,13 @@ import { MemoizedThemeToggle } from './components/theme-toggle';
 import { ThinkingBox } from './components/thinking-box/thinking-box';
 import { mockData } from './mocks/thinking-data';
 import type { ThinkingData } from './mocks/thinking-interface';
+import { useAppAnimationControl } from './providers/animation-control.tsx';
 import { getStepDurationInSeconds } from './utils/timing.ts';
 
 export const App: FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [currentData, setCurrentData] = useState<ThinkingData | undefined>(mockData[0]);
+  const { getAnimationDuration: s } = useAppAnimationControl();
 
   const handleStepChange = useCallback((step: number) => {
     setCurrentStep(step);
@@ -38,7 +40,7 @@ export const App: FC = () => {
       <div className="mb-2 w-full max-w-2xl sm:mb-4">
         <PlaybackControl
           totalSteps={mockData.length}
-          autoSwitchIntervalInMs={getStepDurationInSeconds(currentData) * 1000}
+          autoSwitchIntervalInMs={s(getStepDurationInSeconds(currentData)) * 1000}
           onStepChange={handleStepChange}
         />
       </div>
