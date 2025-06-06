@@ -234,8 +234,9 @@ const ThinkingStepPlaintext = forwardRef<
           bounce: 0,
           ...(disableAllAnimations && { duration: 0 }),
         }}
+        className="mb-1"
       >
-        <LightSweepText className="mb-2 font-medium" content={data.title} disableAllAnimations={disableAllAnimations} />
+        <LightSweepText className="font-medium" content={data.title} disableAllAnimations={disableAllAnimations} />
       </motion.div>
 
       <motion.div
@@ -283,9 +284,10 @@ const ThinkingStepSearch = forwardRef<
           bounce: 0,
           ...(disableAllAnimations && { duration: 0 }),
         }}
+        className="mb-2"
       >
         <LightSweepText
-          className="mb-2 font-medium"
+          className="font-medium"
           content="Searching the Web"
           disableAllAnimations={disableAllAnimations}
         />
