@@ -2,6 +2,7 @@ import { useAppAnimationControl } from '#src/providers/animation-control.tsx';
 import { cn } from '#src/utils/cn.ts';
 import { motion } from 'motion/react';
 import { FC, Fragment, memo, useMemo } from 'react';
+import { splitByVisibleCharacterGroups } from './segmenter.ts';
 import {
   FIRST_FRAME_DELAY_OFFSET_IN_SECONDS,
   getSingleParagraphAnimationDurationInSeconds,
@@ -21,7 +22,7 @@ export const Paragraphs: FC<{
   const { showOutlines } = useAppAnimationControl();
 
   const renderParagraph = (paragraph: string, previousParagraphAnimationDuration: number) => {
-    const slices = paragraph.match(new RegExp(`.{1,${SPLIT_UNIT}}`, 'g')) ?? [];
+    const slices = splitByVisibleCharacterGroups(paragraph, SPLIT_UNIT);
     return slices.map((slice, index) => (
       <motion.span
         key={index}

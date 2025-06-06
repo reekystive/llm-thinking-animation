@@ -1,3 +1,5 @@
+import { splitByVisibleCharacterGroups } from './segmenter.ts';
+
 /** configured values */
 export const CHARACTERS_PER_SECOND = 200;
 export const SPLIT_UNIT = 10;
@@ -12,7 +14,7 @@ export const UNIT_ANIMATION_DURATION_IN_SECONDS = ANIMATING_UNITS_IN_SCREEN * UN
 export const FIRST_FRAME_DELAY_OFFSET_IN_SECONDS = -FIRST_FRAME_ANIMATING_CHARACTER_COUNT / CHARACTERS_PER_SECOND;
 
 export const getSingleParagraphAnimationDurationInSeconds = (paragraph: string) => {
-  const slices = paragraph.match(new RegExp(`.{1,${SPLIT_UNIT}}`, 'g')) ?? [];
+  const slices = splitByVisibleCharacterGroups(paragraph, SPLIT_UNIT);
   return slices.length * UNIT_DELAY_IN_SECONDS;
 };
 
