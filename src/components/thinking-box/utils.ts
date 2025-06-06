@@ -1,6 +1,6 @@
 /** configured values */
-export const CHARACTERS_PER_SECOND = 150;
-export const SPLIT_UNIT = 5;
+export const CHARACTERS_PER_SECOND = 200;
+export const SPLIT_UNIT = 10;
 export const ANIMATING_CHARACTERS_IN_SCREEN = 200;
 
 /** calculated values */

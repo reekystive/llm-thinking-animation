@@ -10,7 +10,8 @@ import { cn } from '#src/utils/cn.ts';
 import { useMeasure } from '@react-hookz/web';
 import { AnimatePresence, motion } from 'motion/react';
 import { FC, forwardRef } from 'react';
-import { Paragraphs } from './paragraph.tsx';
+import { LightSweepText } from './light-sweep-text.tsx';
+import { MemoizedParagraphs } from './paragraph.tsx';
 import { SearchItem } from './search-item.tsx';
 
 interface ThinkingBoxProps {
@@ -47,7 +48,7 @@ export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, cl
           )}
           ref={contentMeasureRef}
         >
-          <ThinkingStep data={currentData} currentStep={currentStep} key={currentStep} />
+          <ThinkingStep data={currentData} currentStep={currentStep} key={currentStep} disableAllAnimations />
         </div>
       </div>
 
@@ -90,131 +91,188 @@ export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, cl
   );
 };
 
-const ThinkingStep = forwardRef<HTMLDivElement, { data: ThinkingData | undefined; currentStep: number }>(
-  function ThinkingStep(props, ref) {
-    const { data, currentStep } = props;
-    return (() => {
-      switch (data?.type) {
-        case 'start-thinking':
-          return (
-            <ThinkingStepStartThinking
-              ref={ref}
-              data={data}
-              stepKey={`start-thinking-${currentStep}`}
-              key={`start-thinking-${currentStep}`}
-            />
-          );
-        case 'end':
-          return <ThinkingStepEnd ref={ref} data={data} stepKey={`end-${currentStep}`} key={`end-${currentStep}`} />;
-        case 'plaintext':
-          return (
-            <ThinkingStepPlaintext
-              ref={ref}
-              data={data}
-              stepKey={`plaintext-${currentStep}`}
-              key={`plaintext-${currentStep}`}
-            />
-          );
-        case 'search':
-          return (
-            <ThinkingStepSearch ref={ref} data={data} stepKey={`search-${currentStep}`} key={`search-${currentStep}`} />
-          );
-        default:
-          data satisfies undefined;
-          return null;
-      }
-    })();
-  }
-);
+const ThinkingStep = forwardRef<
+  HTMLDivElement,
+  { data: ThinkingData | undefined; currentStep: number; disableAllAnimations?: boolean }
+>(function ThinkingStep(props, ref) {
+  const { data, currentStep, disableAllAnimations } = props;
+  return (() => {
+    switch (data?.type) {
+      case 'start-thinking':
+        return (
+          <ThinkingStepStartThinking
+            ref={ref}
+            data={data}
+            stepKey={`start-thinking-${currentStep}`}
+            key={`start-thinking-${currentStep}`}
+            disableAllAnimations={disableAllAnimations}
+          />
+        );
+      case 'end':
+        return (
+          <ThinkingStepEnd
+            ref={ref}
+            data={data}
+            stepKey={`end-${currentStep}`}
+            key={`end-${currentStep}`}
+            disableAllAnimations={disableAllAnimations}
+          />
+        );
+      case 'plaintext':
+        return (
+          <ThinkingStepPlaintext
+            ref={ref}
+            data={data}
+            stepKey={`plaintext-${currentStep}`}
+            key={`plaintext-${currentStep}`}
+            disableAllAnimations={disableAllAnimations}
+          />
+        );
+      case 'search':
+        return (
+          <ThinkingStepSearch
+            ref={ref}
+            data={data}
+            stepKey={`search-${currentStep}`}
+            key={`search-${currentStep}`}
+            disableAllAnimations={disableAllAnimations}
+          />
+        );
+      default:
+        data satisfies undefined;
+        return null;
+    }
+  })();
+});
 
-const ThinkingStepStartThinking = forwardRef<HTMLDivElement, { data: StartThinkingData; stepKey: string }>(
-  function ThinkingStepStartThinking(props, ref) {
-    const { stepKey } = props;
-    const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
-    return (
-      <motion.div
-        className={cn('flex w-fit flex-col items-start px-4 py-3', showOutlines && 'outline outline-yellow-400/50')}
-        initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
-        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-        exit={{ opacity: 0, y: 0, filter: 'blur(5px)' }}
-        transition={{ duration: s(0.5), type: 'spring', bounce: 0 }}
-        layout
-        key={stepKey}
-        ref={ref}
-      >
-        <div className="font-medium">Thinking</div>
-      </motion.div>
-    );
-  }
-);
+const ThinkingStepStartThinking = forwardRef<
+  HTMLDivElement,
+  { data: StartThinkingData; stepKey: string; disableAllAnimations?: boolean }
+>(function ThinkingStepStartThinking(props, ref) {
+  const { stepKey, disableAllAnimations } = props;
+  const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
+  return (
+    <motion.div
+      className={cn(
+        'flex w-fit flex-col items-start px-4 py-3',
+        showOutlines && 'outline outline-yellow-400/50',
+        disableAllAnimations && 'transition-none'
+      )}
+      initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
+      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      exit={{ opacity: 0, y: 0, filter: 'blur(5px)' }}
+      transition={{
+        duration: s(0.5),
+        type: 'spring',
+        bounce: 0,
+        ...(disableAllAnimations && { duration: 0 }),
+      }}
+      layout
+      key={stepKey}
+      ref={ref}
+    >
+      <LightSweepText className="font-medium" content="Thinking" />
+    </motion.div>
+  );
+});
 
-const ThinkingStepEnd = forwardRef<HTMLDivElement, { data: EndThinkingData; stepKey: string }>(
-  function ThinkingStepEnd(props, ref) {
-    const { stepKey } = props;
-    const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
-    return (
-      <motion.div
-        className={cn('flex w-fit flex-col items-start px-4 py-3', showOutlines && 'outline outline-yellow-400/50')}
-        initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
-        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-        exit={{ opacity: 0, y: 0, filter: 'blur(5px)' }}
-        transition={{ duration: s(0.5), type: 'spring', bounce: 0 }}
-        layout
-        key={stepKey}
-        ref={ref}
-      >
-        <div className="font-medium">Thought for 2m 7s</div>
-      </motion.div>
-    );
-  }
-);
+const ThinkingStepEnd = forwardRef<
+  HTMLDivElement,
+  { data: EndThinkingData; stepKey: string; disableAllAnimations?: boolean }
+>(function ThinkingStepEnd(props, ref) {
+  const { stepKey, disableAllAnimations } = props;
+  const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
+  return (
+    <motion.div
+      className={cn(
+        'flex w-fit flex-col items-start px-4 py-3',
+        showOutlines && 'outline outline-yellow-400/50',
+        disableAllAnimations && 'transition-none'
+      )}
+      initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
+      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      exit={{ opacity: 0, y: 0, filter: 'blur(5px)' }}
+      transition={{
+        duration: s(0.5),
+        type: 'spring',
+        bounce: 0,
+        ...(disableAllAnimations && { duration: 0 }),
+      }}
+      layout
+      key={stepKey}
+      ref={ref}
+    >
+      <div className="font-medium">Thought for 2m 7s</div>
+    </motion.div>
+  );
+});
 
-const ThinkingStepPlaintext = forwardRef<HTMLDivElement, { data: PlaintextData; stepKey: string }>(
-  function ThinkingStepPlaintext(props, ref) {
-    const { data, stepKey } = props;
-    const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
-    return (
-      <motion.div
-        className={cn('flex flex-col items-start px-4 py-3', showOutlines && 'outline outline-yellow-400/50')}
-        initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
-        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-        exit={{ opacity: 0, y: 0, filter: 'blur(5px)' }}
-        transition={{ duration: s(0.5), type: 'spring', bounce: 0 }}
-        layout
-        key={stepKey}
-        ref={ref}
-      >
-        <div className="mb-2 font-medium">{data.title}</div>
-        <div className="flex flex-col gap-2">
-          <Paragraphs contentText={data.content} />
-        </div>
-      </motion.div>
-    );
-  }
-);
+const ThinkingStepPlaintext = forwardRef<
+  HTMLDivElement,
+  { data: PlaintextData; stepKey: string; disableAllAnimations?: boolean }
+>(function ThinkingStepPlaintext(props, ref) {
+  const { data, stepKey, disableAllAnimations } = props;
+  const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
+  return (
+    <motion.div
+      className={cn(
+        'flex flex-col items-start px-4 py-3',
+        showOutlines && 'outline outline-yellow-400/50',
+        disableAllAnimations && 'transition-none'
+      )}
+      initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
+      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      exit={{ opacity: 0, y: 0, filter: 'blur(5px)' }}
+      transition={{
+        duration: s(0.5),
+        type: 'spring',
+        bounce: 0,
+        ...(disableAllAnimations && { duration: 0 }),
+      }}
+      layout
+      key={stepKey}
+      ref={ref}
+    >
+      <LightSweepText className="mb-2 font-medium" content={data.title} />
+      <div className="flex flex-col gap-2">
+        <MemoizedParagraphs contentText={data.content} disableAllAnimations={disableAllAnimations} />
+      </div>
+    </motion.div>
+  );
+});
 
-const ThinkingStepSearch = forwardRef<HTMLDivElement, { data: SearchData; stepKey: string }>(
-  function ThinkingStepSearch(props, ref) {
-    const { data, stepKey } = props;
-    const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
-    return (
-      <motion.div
-        className={cn('flex flex-col items-start px-4 py-3', showOutlines && 'outline outline-yellow-400/50')}
-        initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
-        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-        exit={{ opacity: 0, y: 0, filter: 'blur(5px)' }}
-        transition={{ duration: s(0.5), type: 'spring', bounce: 0 }}
-        layout
-        key={stepKey}
-        ref={ref}
-      >
-        <div className="mb-2 font-medium">Searching the Web</div>
-        <div className="flex flex-wrap gap-1">
-          {data.websites.map((website, index) => (
-            <SearchItem data={website} key={`${website.url}-${index}`} />
-          ))}
-        </div>
-      </motion.div>
-    );
-  }
-);
+const ThinkingStepSearch = forwardRef<
+  HTMLDivElement,
+  { data: SearchData; stepKey: string; disableAllAnimations?: boolean }
+>(function ThinkingStepSearch(props, ref) {
+  const { data, stepKey, disableAllAnimations } = props;
+  const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
+  return (
+    <motion.div
+      className={cn(
+        'flex flex-col items-start px-4 py-3',
+        showOutlines && 'outline outline-yellow-400/50',
+        disableAllAnimations && 'transition-none'
+      )}
+      initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
+      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+      exit={{ opacity: 0, y: 0, filter: 'blur(5px)' }}
+      transition={{
+        duration: s(0.5),
+        type: 'spring',
+        bounce: 0,
+        ...(disableAllAnimations && { duration: 0 }),
+      }}
+      layout
+      key={stepKey}
+      ref={ref}
+    >
+      <LightSweepText className="mb-2 font-medium" content="Searching the Web" />
+      <div className="flex flex-wrap gap-1">
+        {data.websites.map((website, index) => (
+          <SearchItem data={website} key={`${website.url}-${index}`} />
+        ))}
+      </div>
+    </motion.div>
+  );
+});
