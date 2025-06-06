@@ -17,7 +17,8 @@ export const SearchItem: FC<{ data: Website; className?: string }> = ({ data, cl
       <div
         className={cn(
           'flex aspect-square h-[1.2em] items-center justify-center overflow-clip rounded-full p-[1px]',
-          faviconUrl && 'bg-gray-200 dark:bg-gray-600'
+          faviconUrl && 'bg-gray-200 dark:bg-gray-600',
+          !faviconUrl && 'ml-[0.5px]'
         )}
       >
         {faviconUrl ? (
