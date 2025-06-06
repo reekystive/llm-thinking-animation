@@ -1,6 +1,6 @@
 import { useAppAnimationControl } from '#src/providers/animation-control.tsx';
 import { cn } from '#src/utils/cn.ts';
-import { motion } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { FC } from 'react';
 
 const LIGHT_STRIP_WIDTH_PERCENT = 30;
@@ -60,30 +60,32 @@ export const LightSweepText: FC<LightSweepTextProps> = ({
   };
 
   return (
-    <motion.div
-      className={cn(showOutlines && 'bg-red-600/30', className)}
-      style={{
-        maskImage: getMaskImage({ enableDebug: showOutlines, invertOpacity: true }),
-        maskSize: `${pMaskWidthRelativeToText}% 100%`,
-        maskRepeat: 'no-repeat',
-      }}
-      initial={{
-        maskPosition: `${getMaskPositionPercent(-(100 + pSweepWidthRelativeToText))} 0%`,
-      }}
-      animate={{
-        maskPosition: `${getMaskPositionPercent(0)}% 0%`,
-      }}
-      transition={{
-        duration: s(durationInSeconds),
-        repeat: Infinity,
-        type: 'tween',
-        ease: 'easeOut',
-        delay: s(delayInSeconds),
-        repeatDelay: s(repeatDelayInSeconds),
-        ...(disableAllAnimations && { duration: 0, delay: 0, repeat: 0 }),
-      }}
-    >
-      {content}
-    </motion.div>
+    <AnimatePresence initial={true}>
+      <motion.div
+        className={cn(showOutlines && 'bg-red-600/30', className)}
+        style={{
+          maskImage: getMaskImage({ enableDebug: showOutlines, invertOpacity: true }),
+          maskSize: `${pMaskWidthRelativeToText}% 100%`,
+          maskRepeat: 'no-repeat',
+        }}
+        initial={{
+          maskPosition: `${getMaskPositionPercent(-(100 + pSweepWidthRelativeToText))} 0%`,
+        }}
+        animate={{
+          maskPosition: `${getMaskPositionPercent(0)}% 0%`,
+        }}
+        transition={{
+          duration: s(durationInSeconds),
+          repeat: Infinity,
+          type: 'tween',
+          ease: 'easeOut',
+          delay: s(delayInSeconds),
+          repeatDelay: s(repeatDelayInSeconds),
+          ...(disableAllAnimations && { duration: 0, delay: 0, repeat: 0 }),
+        }}
+      >
+        {content}
+      </motion.div>
+    </AnimatePresence>
   );
 };
