@@ -171,7 +171,7 @@ const ThinkingStepStartThinking = forwardRef<
       key={stepKey}
       ref={ref}
     >
-      <LightSweepText className="font-medium" content="Thinking" />
+      <LightSweepText className="font-medium" content="Thinking" disableAllAnimations={disableAllAnimations} />
     </motion.div>
   );
 });
@@ -233,7 +233,7 @@ const ThinkingStepPlaintext = forwardRef<
       key={stepKey}
       ref={ref}
     >
-      <LightSweepText className="mb-2 font-medium" content={data.title} />
+      <LightSweepText className="mb-2 font-medium" content={data.title} disableAllAnimations={disableAllAnimations} />
       <div className="flex flex-col gap-2">
         <MemoizedParagraphs contentText={data.content} disableAllAnimations={disableAllAnimations} />
       </div>
@@ -267,7 +267,11 @@ const ThinkingStepSearch = forwardRef<
       key={stepKey}
       ref={ref}
     >
-      <LightSweepText className="mb-2 font-medium" content="Searching the Web" />
+      <LightSweepText
+        className="mb-2 font-medium"
+        content="Searching the Web"
+        disableAllAnimations={disableAllAnimations}
+      />
       <div className="flex flex-wrap gap-1">
         {data.websites.map((website, index) => (
           <SearchItem data={website} key={`${website.url}-${index}`} />

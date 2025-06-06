@@ -8,15 +8,19 @@ const LIGHT_STRIP_WIDTH_PERCENT = 30;
 export interface LightSweepTextProps {
   content: string;
   className?: string;
+  delayInSeconds?: number;
   durationInSeconds?: number;
   repeatDelayInSeconds?: number;
+  disableAllAnimations?: boolean;
 }
 
 export const LightSweepText: FC<LightSweepTextProps> = ({
   content,
   className,
   durationInSeconds = 2,
-  repeatDelayInSeconds = 0.5,
+  delayInSeconds = 0.75,
+  repeatDelayInSeconds = 1,
+  disableAllAnimations = false,
 }) => {
   const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
 
@@ -74,7 +78,9 @@ export const LightSweepText: FC<LightSweepTextProps> = ({
         repeat: Infinity,
         type: 'tween',
         ease: 'easeOut',
+        delay: s(delayInSeconds),
         repeatDelay: s(repeatDelayInSeconds),
+        ...(disableAllAnimations && { duration: 0, delay: 0, repeat: 0 }),
       }}
     >
       {content}
