@@ -3,17 +3,19 @@ import { cn } from '#src/utils/cn.ts';
 import { motion } from 'motion/react';
 import { FC, Fragment, memo, useMemo } from 'react';
 import {
+  FIRST_FRAME_DELAY_OFFSET_IN_SECONDS,
   getSingleParagraphAnimationDurationInSeconds,
   SPLIT_UNIT,
   UNIT_ANIMATION_DURATION_IN_SECONDS,
   UNIT_DELAY_IN_SECONDS,
 } from './utils.ts';
 
-export const Paragraphs: FC<{ contentText: string; className?: string; disableAllAnimations?: boolean }> = ({
-  contentText,
-  className,
-  disableAllAnimations,
-}) => {
+export const Paragraphs: FC<{
+  contentText: string;
+  className?: string;
+  disableAllAnimations?: boolean;
+  delayInSeconds?: number;
+}> = ({ contentText, className, disableAllAnimations, delayInSeconds = FIRST_FRAME_DELAY_OFFSET_IN_SECONDS }) => {
   const paragraphs = useMemo(() => contentText.split(/\n+/).map((line) => line), [contentText]);
   const { getAnimationDuration: s } = useAppAnimationControl();
   const { showOutlines } = useAppAnimationControl();
@@ -30,7 +32,7 @@ export const Paragraphs: FC<{ contentText: string; className?: string; disableAl
           duration: s(UNIT_ANIMATION_DURATION_IN_SECONDS),
           type: 'tween',
           ease: 'easeInOut',
-          delay: s(previousParagraphAnimationDuration + index * UNIT_DELAY_IN_SECONDS),
+          delay: s(previousParagraphAnimationDuration + index * UNIT_DELAY_IN_SECONDS + delayInSeconds),
           ...(disableAllAnimations && { duration: 0, delay: 0 }),
         }}
       >

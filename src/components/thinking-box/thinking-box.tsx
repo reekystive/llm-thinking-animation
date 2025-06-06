@@ -158,9 +158,9 @@ const ThinkingStepStartThinking = forwardRef<
         showOutlines && 'outline outline-yellow-400/50',
         disableAllAnimations && 'transition-none'
       )}
-      initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
-      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-      exit={{ opacity: 0, y: 0, filter: 'blur(5px)' }}
+      initial={{ opacity: 0, filter: 'blur(2px)' }}
+      animate={{ opacity: 1, filter: 'blur(0px)' }}
+      exit={{ opacity: 0, filter: 'blur(2px)' }}
       transition={{
         duration: s(0.5),
         type: 'spring',
@@ -189,9 +189,9 @@ const ThinkingStepEnd = forwardRef<
         showOutlines && 'outline outline-yellow-400/50',
         disableAllAnimations && 'transition-none'
       )}
-      initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
-      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-      exit={{ opacity: 0, y: 0, filter: 'blur(5px)' }}
+      initial={{ opacity: 0, filter: 'blur(2px)' }}
+      animate={{ opacity: 1, filter: 'blur(0px)' }}
+      exit={{ opacity: 0, filter: 'blur(2px)' }}
       transition={{
         duration: s(0.5),
         type: 'spring',
@@ -220,23 +220,38 @@ const ThinkingStepPlaintext = forwardRef<
         showOutlines && 'outline outline-yellow-400/50',
         disableAllAnimations && 'transition-none'
       )}
-      initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
-      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-      exit={{ opacity: 0, y: 0, filter: 'blur(5px)' }}
-      transition={{
-        duration: s(0.5),
-        type: 'spring',
-        bounce: 0,
-        ...(disableAllAnimations && { duration: 0 }),
-      }}
       layout
       key={stepKey}
       ref={ref}
     >
-      <LightSweepText className="mb-2 font-medium" content={data.title} disableAllAnimations={disableAllAnimations} />
-      <div className="flex flex-col gap-2">
+      <motion.div
+        initial={{ opacity: 0, filter: 'blur(2px)' }}
+        animate={{ opacity: 1, filter: 'blur(0px)' }}
+        exit={{ opacity: 0, filter: 'blur(2px)' }}
+        transition={{
+          duration: s(0.5),
+          type: 'spring',
+          bounce: 0,
+          ...(disableAllAnimations && { duration: 0 }),
+        }}
+      >
+        <LightSweepText className="mb-2 font-medium" content={data.title} disableAllAnimations={disableAllAnimations} />
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 1, y: -8, filter: 'blur(1px)' }}
+        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+        exit={{ opacity: 0, y: 0, filter: 'blur(1px)' }}
+        transition={{
+          duration: s(0.75),
+          type: 'spring',
+          bounce: 0,
+          ...(disableAllAnimations && { duration: 0 }),
+        }}
+        className="flex flex-col gap-2 pb-1"
+      >
         <MemoizedParagraphs contentText={data.content} disableAllAnimations={disableAllAnimations} />
-      </div>
+      </motion.div>
     </motion.div>
   );
 });
@@ -254,29 +269,44 @@ const ThinkingStepSearch = forwardRef<
         showOutlines && 'outline outline-yellow-400/50',
         disableAllAnimations && 'transition-none'
       )}
-      initial={{ opacity: 0, y: 10, filter: 'blur(5px)' }}
-      animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-      exit={{ opacity: 0, y: 0, filter: 'blur(5px)' }}
-      transition={{
-        duration: s(0.5),
-        type: 'spring',
-        bounce: 0,
-        ...(disableAllAnimations && { duration: 0 }),
-      }}
       layout
       key={stepKey}
       ref={ref}
     >
-      <LightSweepText
-        className="mb-2 font-medium"
-        content="Searching the Web"
-        disableAllAnimations={disableAllAnimations}
-      />
-      <div className="flex flex-wrap gap-1">
+      <motion.div
+        initial={{ opacity: 0, filter: 'blur(2px)' }}
+        animate={{ opacity: 1, filter: 'blur(0px)' }}
+        exit={{ opacity: 0, filter: 'blur(2px)' }}
+        transition={{
+          duration: s(0.5),
+          type: 'spring',
+          bounce: 0,
+          ...(disableAllAnimations && { duration: 0 }),
+        }}
+      >
+        <LightSweepText
+          className="mb-2 font-medium"
+          content="Searching the Web"
+          disableAllAnimations={disableAllAnimations}
+        />
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: -2, filter: 'blur(1px)' }}
+        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+        exit={{ opacity: 0, y: 0, filter: 'blur(1px)' }}
+        transition={{
+          duration: s(0.75),
+          type: 'spring',
+          bounce: 0,
+          ...(disableAllAnimations && { duration: 0 }),
+        }}
+        className="flex flex-wrap gap-1 pb-1"
+      >
         {data.websites.map((website, index) => (
           <SearchItem data={website} key={`${website.url}-${index}`} />
         ))}
-      </div>
+      </motion.div>
     </motion.div>
   );
 });
