@@ -31,7 +31,7 @@ export const Paragraphs: FC<{
         transition={{
           duration: s(UNIT_ANIMATION_DURATION_IN_SECONDS),
           type: 'tween',
-          ease: 'easeInOut',
+          ease: 'linear',
           delay: s(previousParagraphAnimationDuration + index * UNIT_DELAY_IN_SECONDS + delayInSeconds),
           ...(disableAllAnimations && { duration: 0, delay: 0 }),
         }}
