@@ -4,7 +4,7 @@ import { splitByVisibleCharacterGroups } from './segmenter.ts';
 export const CHARACTERS_PER_SECOND = 180;
 export const SPLIT_UNIT = 8;
 export const ANIMATING_CHARACTERS_IN_SCREEN = 180;
-export const FIRST_FRAME_ANIMATING_CHARACTER_COUNT = 80;
+export const FIRST_FRAME_ANIMATING_CHARACTER_COUNT = 70;
 
 /** calculated values */
 export const CHARACTER_DELAY_IN_SECONDS = 1 / CHARACTERS_PER_SECOND;
