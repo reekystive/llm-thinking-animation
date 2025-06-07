@@ -235,7 +235,7 @@ const NavigateButton: FC<{
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'cursor-pointer rounded-full p-2 transition-colors outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50',
+        'cursor-pointer rounded-full p-2.5 transition-colors outline-none active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 sm:p-2',
         variant === 'primary' && 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500',
         variant === 'secondary' && 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600',
         activeByKeyboard && !disabled && 'scale-95',
