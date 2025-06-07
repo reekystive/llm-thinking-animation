@@ -9,7 +9,7 @@ import { useAppAnimationControl } from '#src/providers/animation-control.tsx';
 import { cn } from '#src/utils/cn.ts';
 import { useMeasure } from '@react-hookz/web';
 import { AnimatePresence, motion } from 'motion/react';
-import { FC, forwardRef } from 'react';
+import { FC, forwardRef, memo } from 'react';
 import { LightSweepText } from './light-sweep-text.tsx';
 import { MemoizedParagraphs } from './paragraph.tsx';
 import { SearchItem } from './search-item.tsx';
@@ -66,10 +66,10 @@ export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, cl
             bounce: 0,
           }}
         >
-          {/* measure the width and height of the content, and use is as the parent container's width and height */}
+          {/* measure the width and height of the content, and use is as the */}
           <div ref={contentMeasureRef} className={cn(isSmall && 'w-fit', !isSmall && 'w-full')}>
             <AnimatePresence initial={false} mode="popLayout">
-              <ThinkingStep data={currentData} currentStep={currentStep} key={currentStep} />
+              <MemoizedThinkingStep data={currentData} currentStep={currentStep} key={currentStep} />
             </AnimatePresence>
           </div>
         </motion.div>
@@ -131,6 +131,8 @@ const ThinkingStep = forwardRef<
     }
   })();
 });
+
+const MemoizedThinkingStep = memo(ThinkingStep);
 
 const ThinkingStepStartThinking = forwardRef<
   HTMLDivElement,
