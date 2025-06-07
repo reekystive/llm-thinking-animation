@@ -238,7 +238,7 @@ const ThinkingStepPlaintext = forwardRef<
           bounce: 0,
           ...(disableAllAnimations && { duration: 0 }),
         }}
-        className="flex flex-col gap-2 pb-1"
+        className="flex w-full flex-col gap-2 pb-1"
       >
         <MemoizedParagraphs contentText={data.content} disableAllAnimations={disableAllAnimations} />
       </motion.div>
@@ -292,7 +292,7 @@ const ThinkingStepSearch = forwardRef<
           bounce: 0,
           ...(disableAllAnimations && { duration: 0 }),
         }}
-        className="flex flex-wrap gap-1 pb-1"
+        className="flex w-full flex-wrap gap-1 pb-1"
       >
         {data.websites.map((website, index) => (
           <SearchItem data={website} key={`${website.url}-${index}`} />

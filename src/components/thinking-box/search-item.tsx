@@ -26,7 +26,7 @@ export const SearchItem: FC<{ data: Website; className?: string }> = ({ data, cl
   return (
     <div
       className={cn(
-        'flex flex-row items-center rounded-full border-[1px] border-gray-200 bg-gray-50 py-0.5 pr-1.5 pl-0.5 text-xs leading-[1.2em] dark:border-gray-700 dark:bg-gray-900',
+        'flex min-w-0 flex-row items-center rounded-full border-[1px] border-gray-200 bg-gray-50 py-0.5 pr-1.5 pl-0.5 text-xs leading-[1.2em] dark:border-gray-700 dark:bg-gray-900',
         faviconUrl && 'gap-[3px]',
         !faviconUrl && 'gap-[1px]',
         className
@@ -34,7 +34,7 @@ export const SearchItem: FC<{ data: Website; className?: string }> = ({ data, cl
     >
       <div
         className={cn(
-          'flex aspect-square h-[1.2em] min-w-0 items-center justify-center overflow-clip rounded-full p-[1px]',
+          'flex aspect-square h-[1.2em] min-w-0 shrink-0 items-center justify-center overflow-clip rounded-full p-[1px]',
           faviconUrl && 'bg-gray-200 dark:bg-gray-600',
           !faviconUrl && 'ml-[0.5px]'
         )}
@@ -49,7 +49,7 @@ export const SearchItem: FC<{ data: Website; className?: string }> = ({ data, cl
           <SearchIcon className="block h-full w-full overflow-clip rounded-full p-[0.5px]" />
         )}
       </div>
-      <div>{title}</div>
+      <div className="truncate">{title}</div>
     </div>
   );
 };
