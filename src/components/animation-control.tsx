@@ -48,9 +48,9 @@ export const AnimationControl: FC<{ className?: string }> = ({ className }) => {
         )}
         onClick={() => setShowBorders(!showBorders)}
       >
-        <span className="trim-both">{showBorders ? 'Hide Borders' : 'Show Borders'}</span>
-        <span className="trim-both invisible h-0 overflow-clip leading-0">Show Borders</span>
-        <span className="trim-both invisible h-0 overflow-clip leading-0">Hide Borders</span>
+        <span className="trim-both">{showBorders ? 'Hide borders' : 'Show borders'}</span>
+        <span className="trim-both invisible h-0 overflow-clip leading-0">Show borders</span>
+        <span className="trim-both invisible h-0 overflow-clip leading-0">Hide borders</span>
       </button>
     </div>
   );
