@@ -25,34 +25,15 @@ export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, cl
   const [contentMeasure, contentMeasureRef] = useMeasure<HTMLDivElement>(true);
   const [containerMeasure, containerMeasureRef] = useMeasure<HTMLDivElement>(true);
 
-  const SHOW_PHANTOM_ELEMENT = false as boolean;
   const isSmall = currentData?.type === 'start-thinking' || currentData?.type === 'end';
   const hideThinkingBoxBorder = currentData?.type === 'start-thinking' || currentData?.type === 'end';
 
   return (
     <>
-      {/* phantom element for measuring the size of the thinking box */}
-      <div
-        ref={containerMeasureRef}
-        className={cn(
-          'relative w-full',
-          !SHOW_PHANTOM_ELEMENT && 'invisible overflow-clip',
-          SHOW_PHANTOM_ELEMENT && 'outline outline-red-400/50'
-        )}
-      >
-        <div
-          className={cn(
-            isSmall ? 'w-fit' : 'w-full',
-            !SHOW_PHANTOM_ELEMENT && 'absolute',
-            SHOW_PHANTOM_ELEMENT && 'outline outline-blue-400/50'
-          )}
-          ref={contentMeasureRef}
-        >
-          <ThinkingStep data={currentData} currentStep={currentStep} key={currentStep} disableAllAnimations />
-        </div>
-      </div>
+      {/* phantom element for measuring the width of the container */}
+      <div ref={containerMeasureRef} className="invisible h-0 w-full"></div>
 
-      {/* real element */}
+      {/* animated container with adaptive width (measured from the content) */}
       <motion.div
         className={cn('relative overflow-clip rounded-lg')}
         animate={{
@@ -65,6 +46,7 @@ export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, cl
           bounce: 0,
         }}
       >
+        {/* border */}
         <div
           className={cn(
             'absolute inset-0 rounded-lg outline-1 -outline-offset-1 transition-all duration-300 ease-out',
@@ -72,8 +54,10 @@ export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, cl
             !hideThinkingBoxBorder && 'outline-gray-300/90 dark:outline-gray-700'
           )}
         ></div>
+
+        {/* fix the width of the inner container to avoid the layout being affected by the parent container */}
         <motion.div
-          className={cn('relative', showOutlines && 'outline outline-red-300/50', className)}
+          className={cn(showOutlines && 'outline outline-red-300/50', className)}
           style={{ width: containerMeasure?.width }}
           layout
           transition={{
@@ -82,9 +66,12 @@ export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, cl
             bounce: 0,
           }}
         >
-          <AnimatePresence initial={false} mode="popLayout">
-            <ThinkingStep data={currentData} currentStep={currentStep} key={currentStep} />
-          </AnimatePresence>
+          {/* measure the width and height of the content, and use is as the parent container's width and height */}
+          <div ref={contentMeasureRef} className={cn(isSmall && 'w-fit', !isSmall && 'w-full')}>
+            <AnimatePresence initial={false} mode="popLayout">
+              <ThinkingStep data={currentData} currentStep={currentStep} key={currentStep} />
+            </AnimatePresence>
+          </div>
         </motion.div>
       </motion.div>
     </>
