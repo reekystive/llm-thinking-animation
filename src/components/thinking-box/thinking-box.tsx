@@ -292,7 +292,7 @@ const ThinkingStepSearch = forwardRef<
           bounce: 0,
           ...(disableAllAnimations && { duration: 0 }),
         }}
-        className="flex w-full flex-wrap gap-1 pb-1"
+        className="mx-[-2px] flex w-[calc(100%+4px)] flex-wrap gap-1 pb-1"
       >
         {data.websites.map((website, index) => (
           <SearchItem data={website} key={`${website.url}-${index}`} />
