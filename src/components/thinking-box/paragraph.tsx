@@ -19,14 +19,14 @@ export const Paragraphs: FC<{
 }> = ({ contentText, className, disableAllAnimations, delayInSeconds = FIRST_FRAME_DELAY_OFFSET_IN_SECONDS }) => {
   const paragraphs = useMemo(() => contentText.split(/\n+/).map((line) => line), [contentText]);
   const { getAnimationDuration: s } = useAppAnimationControl();
-  const { showOutlines } = useAppAnimationControl();
+  const { showBorders } = useAppAnimationControl();
 
   const renderParagraph = (paragraph: string, previousParagraphAnimationDuration: number) => {
     const slices = splitByVisibleCharacterGroups(paragraph, SPLIT_UNIT);
     return slices.map((slice, index) => (
       <motion.span
         key={index}
-        className={cn(showOutlines && 'outline-1 -outline-offset-1 outline-yellow-400/50')}
+        className={cn(showBorders && 'outline-1 -outline-offset-1 outline-yellow-400/50')}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{

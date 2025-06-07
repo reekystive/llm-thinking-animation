@@ -21,7 +21,7 @@ interface ThinkingBoxProps {
 }
 
 export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, className }) => {
-  const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
+  const { getAnimationDuration: s, showBorders } = useAppAnimationControl();
   const [contentMeasure, contentMeasureRef] = useMeasure<HTMLDivElement>(true);
   const [containerMeasure, containerMeasureRef] = useMeasure<HTMLDivElement>(true);
 
@@ -57,7 +57,7 @@ export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, cl
 
         {/* fix the width of the inner container to avoid the layout being affected by the parent container */}
         <motion.div
-          className={cn(showOutlines && 'outline outline-red-300/50', className)}
+          className={cn(showBorders && 'outline outline-red-300/50', className)}
           style={{ width: containerMeasure?.width }}
           layout
           transition={{
@@ -139,12 +139,12 @@ const ThinkingStepStartThinking = forwardRef<
   { data: StartThinkingData; stepKey: string; disableAllAnimations?: boolean }
 >(function ThinkingStepStartThinking(props, ref) {
   const { stepKey, disableAllAnimations } = props;
-  const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
+  const { getAnimationDuration: s, showBorders } = useAppAnimationControl();
   return (
     <motion.div
       className={cn(
         'flex w-fit flex-col items-start px-4 py-3',
-        showOutlines && 'outline outline-yellow-400/50',
+        showBorders && 'outline outline-yellow-400/50',
         disableAllAnimations && 'transition-none'
       )}
       initial={{ x: -2, opacity: 0, filter: 'blur(2px)' }}
@@ -170,12 +170,12 @@ const ThinkingStepEnd = forwardRef<
   { data: EndThinkingData; stepKey: string; disableAllAnimations?: boolean }
 >(function ThinkingStepEnd(props, ref) {
   const { stepKey, disableAllAnimations } = props;
-  const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
+  const { getAnimationDuration: s, showBorders } = useAppAnimationControl();
   return (
     <motion.div
       className={cn(
         'flex w-fit flex-col items-start px-4 py-3',
-        showOutlines && 'outline outline-yellow-400/50',
+        showBorders && 'outline outline-yellow-400/50',
         disableAllAnimations && 'transition-none'
       )}
       initial={{ x: -2, opacity: 0, filter: 'blur(2px)' }}
@@ -201,12 +201,12 @@ const ThinkingStepPlaintext = forwardRef<
   { data: PlaintextData; stepKey: string; disableAllAnimations?: boolean }
 >(function ThinkingStepPlaintext(props, ref) {
   const { data, stepKey, disableAllAnimations } = props;
-  const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
+  const { getAnimationDuration: s, showBorders } = useAppAnimationControl();
   return (
     <motion.div
       className={cn(
         'flex flex-col items-start px-4 py-3',
-        showOutlines && 'outline outline-yellow-400/50',
+        showBorders && 'outline outline-yellow-400/50',
         disableAllAnimations && 'transition-none'
       )}
       layout
@@ -251,12 +251,12 @@ const ThinkingStepSearch = forwardRef<
   { data: SearchData; stepKey: string; disableAllAnimations?: boolean }
 >(function ThinkingStepSearch(props, ref) {
   const { data, stepKey, disableAllAnimations } = props;
-  const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
+  const { getAnimationDuration: s, showBorders } = useAppAnimationControl();
   return (
     <motion.div
       className={cn(
         'flex flex-col items-start px-4 py-3',
-        showOutlines && 'outline outline-yellow-400/50',
+        showBorders && 'outline outline-yellow-400/50',
         disableAllAnimations && 'transition-none'
       )}
       layout

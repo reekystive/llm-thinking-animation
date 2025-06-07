@@ -22,7 +22,7 @@ export const LightSweepText: FC<LightSweepTextProps> = ({
   repeatDelayInSeconds = 1,
   disableAllAnimations = false,
 }) => {
-  const { getAnimationDuration: s, showOutlines } = useAppAnimationControl();
+  const { getAnimationDuration: s, showBorders } = useAppAnimationControl();
 
   // p means percent
   // if the text width is M, the sweep width is N, the mask should looks like
@@ -62,9 +62,9 @@ export const LightSweepText: FC<LightSweepTextProps> = ({
   return (
     <AnimatePresence initial={true}>
       <motion.div
-        className={cn(showOutlines && 'bg-red-600/30', className)}
+        className={cn(showBorders && 'bg-red-600/30', className)}
         style={{
-          maskImage: getMaskImage({ enableDebug: showOutlines, invertOpacity: true }),
+          maskImage: getMaskImage({ enableDebug: showBorders, invertOpacity: true }),
           maskSize: `${pMaskWidthRelativeToText}% 100%`,
           maskRepeat: 'no-repeat',
         }}
