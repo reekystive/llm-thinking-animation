@@ -231,7 +231,7 @@ const ThinkingStepPlaintext = forwardRef<
       <motion.div
         initial={{ opacity: 1, y: -8, filter: 'blur(1px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-        exit={{ opacity: 0, y: 0, filter: 'blur(1px)' }}
+        exit={{ opacity: 0, y: 0, filter: 'blur(2px)' }}
         transition={{
           duration: s(0.75),
           type: 'spring',
