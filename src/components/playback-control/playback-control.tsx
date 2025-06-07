@@ -205,6 +205,7 @@ export const PlaybackControl: FC<PlaybackControlProps> = ({
       <div className="hidden flex-col justify-end sm:flex">
         <div className="text-xs text-gray-500 dark:text-gray-400">
           <div className="inline-flex gap-1 px-1 align-bottom">
+            <MemoizedKeyboardKey className="block" keyText="⇧" />
             <MemoizedKeyboardKey className="block" keyText="←" />
             <MemoizedKeyboardKey className="block" keyText="→" />
           </div>
