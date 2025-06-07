@@ -147,9 +147,9 @@ const ThinkingStepStartThinking = forwardRef<
         showOutlines && 'outline outline-yellow-400/50',
         disableAllAnimations && 'transition-none'
       )}
-      initial={{ x: -3, opacity: 0, filter: 'blur(2px)' }}
+      initial={{ x: -2, opacity: 0, filter: 'blur(2px)' }}
       animate={{ x: 0, opacity: 1, filter: 'blur(0px)' }}
-      exit={{ x: 10, opacity: 0, filter: 'blur(2px)' }}
+      exit={{ x: 6, opacity: 0, filter: 'blur(2px)' }}
       transition={{
         duration: s(0.75),
         type: 'spring',
@@ -178,9 +178,9 @@ const ThinkingStepEnd = forwardRef<
         showOutlines && 'outline outline-yellow-400/50',
         disableAllAnimations && 'transition-none'
       )}
-      initial={{ x: -3, opacity: 0, filter: 'blur(2px)' }}
+      initial={{ x: -2, opacity: 0, filter: 'blur(2px)' }}
       animate={{ x: 0, opacity: 1, filter: 'blur(0px)' }}
-      exit={{ x: 10, opacity: 0, filter: 'blur(2px)' }}
+      exit={{ x: 6, opacity: 0, filter: 'blur(2px)' }}
       transition={{
         duration: s(0.75),
         type: 'spring',
@@ -214,9 +214,9 @@ const ThinkingStepPlaintext = forwardRef<
       ref={ref}
     >
       <motion.div
-        initial={{ x: -3, opacity: 0, filter: 'blur(2px)' }}
+        initial={{ x: -2, opacity: 0, filter: 'blur(2px)' }}
         animate={{ x: 0, opacity: 1, filter: 'blur(0px)' }}
-        exit={{ x: 10, opacity: 0, filter: 'blur(2px)' }}
+        exit={{ x: 6, opacity: 0, filter: 'blur(2px)' }}
         transition={{
           duration: s(0.75),
           type: 'spring',
@@ -264,9 +264,9 @@ const ThinkingStepSearch = forwardRef<
       ref={ref}
     >
       <motion.div
-        initial={{ x: -3, opacity: 0, filter: 'blur(2px)' }}
+        initial={{ x: -2, opacity: 0, filter: 'blur(2px)' }}
         animate={{ x: 0, opacity: 1, filter: 'blur(0px)' }}
-        exit={{ x: 10, opacity: 0, filter: 'blur(2px)' }}
+        exit={{ x: 6, opacity: 0, filter: 'blur(2px)' }}
         transition={{
           duration: s(0.75),
           type: 'spring',
