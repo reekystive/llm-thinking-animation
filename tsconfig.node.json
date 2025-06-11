@@ -18,8 +18,8 @@
     "declaration": true,
     "declarationMap": true,
     "rootDir": ".",
-    "outDir": "./node_modules/.cache/tsc-node",
+    "outDir": "./node_modules/.cache/tsc-node"
   },
   "include": ["./*.ts", "./.*.ts", "./*.js", "./.*.js", "./*.mjs", "./.*.mjs", "./*.cjs", "./.*.cjs", "scripts"],
-  "exclude": [],
+  "exclude": []
 }

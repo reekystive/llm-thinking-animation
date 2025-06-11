@@ -11,7 +11,7 @@ export default {
   overrides: [
     {
       files: 'tsconfig{,.*}.json',
-      options: { parser: 'jsonc' },
+      options: { parser: 'jsonc', trailingComma: 'none' },
     },
   ],
 };
