@@ -232,7 +232,7 @@ const ThinkingStepPlaintext = forwardRef<
           },
           y: {
             type: 'tween',
-            duration: s(0.6),
+            duration: s(0.5),
             ease: cubicBezier(0.1, 1, 0.8, 1),
             ...(disableAllAnimations && { duration: 0 }),
           },
@@ -282,7 +282,7 @@ const ThinkingStepSearch = forwardRef<
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 0, y: -12, filter: 'blur(1px)' }}
+        initial={{ opacity: 0, y: -6, filter: 'blur(1px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
         exit={{ opacity: 0, y: 0, filter: 'blur(4px)' }}
         transition={{
@@ -294,7 +294,7 @@ const ThinkingStepSearch = forwardRef<
           },
           y: {
             type: 'tween',
-            duration: s(0.6),
+            duration: s(0.5),
             ease: cubicBezier(0.1, 1, 0.8, 1),
             ...(disableAllAnimations && { duration: 0 }),
           },
