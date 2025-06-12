@@ -14,6 +14,56 @@ export interface LightSweepTextProps {
   disableAllAnimations?: boolean;
 }
 
+// p means percent
+// if the text width is M, the sweep width is N, the mask should looks like
+// M - N - M
+const pSweepWidthRelativeToText = LIGHT_STRIP_WIDTH_PERCENT;
+const pMaskWidthRelativeToText = 200 + pSweepWidthRelativeToText;
+const pLeftMaskSolidWidthRelativeToSelf = (100 / pMaskWidthRelativeToText) * 100;
+const pMiddleGradientWidthRelativeToSelf = 100 - 2 * pLeftMaskSolidWidthRelativeToSelf;
+
+const sweepOpacity = 0.3;
+const invertSweepOpacity = 0.6;
+const defaultInvertOpacity = true;
+
+const getMaskImage = (config: { enableDebug: boolean; invertOpacity: boolean }) => {
+  const o = sweepOpacity;
+  const io = invertSweepOpacity;
+  const s = pLeftMaskSolidWidthRelativeToSelf;
+  const w = pMiddleGradientWidthRelativeToSelf;
+  const e = s + w;
+
+  if (config.enableDebug) {
+    if (config.invertOpacity) {
+      return `linear-gradient(
+      90deg,
+      rgba(0,0,0,${io}) ${s}%,
+      black ${s + 0.1}%,
+      black ${e - 0.1}%,
+      rgba(0,0,0,${io}) ${e}%)`;
+    } else {
+      return `linear-gradient(
+      90deg,
+      black ${s}%,
+      rgba(0,0,0,${o}) ${s + 0.1}%,
+      rgba(0,0,0,${o}) ${e - 0.1}%,
+      black ${e}%)`;
+    }
+  } else {
+    if (config.invertOpacity) {
+      return `linear-gradient(90deg,
+      rgba(0,0,0,${io}) ${s}%,
+      black ${s + w * 0.5}%,
+      rgba(0,0,0,${io}) ${e}%)`;
+    } else {
+      return `linear-gradient(90deg,
+      black ${s}%,
+      rgba(0,0,0,${o}) ${s + w * 0.5}%,
+      black ${e}%)`;
+    }
+  }
+};
+
 export const LightSweepText: FC<LightSweepTextProps> = ({
   content,
   className,
@@ -23,33 +73,6 @@ export const LightSweepText: FC<LightSweepTextProps> = ({
   disableAllAnimations = false,
 }) => {
   const { getAnimationDuration: s, showBorders } = useAppAnimationControl();
-
-  // p means percent
-  // if the text width is M, the sweep width is N, the mask should looks like
-  // M - N - M
-  const pSweepWidthRelativeToText = LIGHT_STRIP_WIDTH_PERCENT;
-  const pMaskWidthRelativeToText = 200 + pSweepWidthRelativeToText;
-  const pLeftMaskSolidWidthRelativeToSelf = (100 / pMaskWidthRelativeToText) * 100;
-  const pMiddleGradientWidthRelativeToSelf = 100 - 2 * pLeftMaskSolidWidthRelativeToSelf;
-
-  const sweepOpacity = 0.3;
-  const invertSweepOpacity = 0.6;
-
-  const getMaskImage = (config: { enableDebug: boolean; invertOpacity: boolean }) => {
-    if (config.enableDebug) {
-      if (config.invertOpacity) {
-        return `linear-gradient(90deg, rgba(0,0,0,${invertSweepOpacity}) ${pLeftMaskSolidWidthRelativeToSelf}%, black ${pLeftMaskSolidWidthRelativeToSelf + 0.1}%, black ${pLeftMaskSolidWidthRelativeToSelf + pMiddleGradientWidthRelativeToSelf - 0.1}%, rgba(0,0,0,${invertSweepOpacity}) ${pLeftMaskSolidWidthRelativeToSelf + pMiddleGradientWidthRelativeToSelf}%)`;
-      } else {
-        return `linear-gradient(90deg, black ${pLeftMaskSolidWidthRelativeToSelf}%, rgba(0,0,0,${sweepOpacity}) ${pLeftMaskSolidWidthRelativeToSelf + 0.1}%, rgba(0,0,0,${sweepOpacity}) ${pLeftMaskSolidWidthRelativeToSelf + pMiddleGradientWidthRelativeToSelf - 0.1}%, black ${pLeftMaskSolidWidthRelativeToSelf + pMiddleGradientWidthRelativeToSelf}%)`;
-      }
-    } else {
-      if (config.invertOpacity) {
-        return `linear-gradient(90deg, rgba(0,0,0,${invertSweepOpacity}) ${pLeftMaskSolidWidthRelativeToSelf}%, black ${pLeftMaskSolidWidthRelativeToSelf + pMiddleGradientWidthRelativeToSelf / 2}%, rgba(0,0,0,${invertSweepOpacity}) ${pLeftMaskSolidWidthRelativeToSelf + pMiddleGradientWidthRelativeToSelf}%)`;
-      } else {
-        return `linear-gradient(90deg, black ${pLeftMaskSolidWidthRelativeToSelf}%, rgba(0,0,0,${sweepOpacity}) ${pLeftMaskSolidWidthRelativeToSelf + pMiddleGradientWidthRelativeToSelf / 2}%, black ${pLeftMaskSolidWidthRelativeToSelf + pMiddleGradientWidthRelativeToSelf}%)`;
-      }
-    }
-  };
 
   const getMaskPositionPercent = (percentRelativeToText: number) => {
     // if the text width is A, the mask width is B = 2A
@@ -64,7 +87,7 @@ export const LightSweepText: FC<LightSweepTextProps> = ({
       <motion.div
         className={cn(showBorders && 'bg-red-600/30', className)}
         style={{
-          maskImage: getMaskImage({ enableDebug: showBorders, invertOpacity: true }),
+          maskImage: getMaskImage({ enableDebug: showBorders, invertOpacity: defaultInvertOpacity }),
           maskSize: `${pMaskWidthRelativeToText}% 100%`,
           maskRepeat: 'no-repeat',
         }}
