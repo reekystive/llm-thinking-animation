@@ -49,22 +49,16 @@ export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, cl
         {/* border */}
         <div
           className={cn(
-            'absolute inset-0 rounded-lg outline-1 -outline-offset-1 transition-all duration-300 ease-out',
+            'pointer-events-none absolute inset-0 rounded-lg outline-1 -outline-offset-1 transition-all duration-300 ease-out',
             hideThinkingBoxBorder && 'outline-transparent',
             !hideThinkingBoxBorder && 'outline-gray-300/90 dark:outline-gray-700'
           )}
         ></div>
 
         {/* fix the width of the inner container to avoid the layout being affected by the parent container */}
-        <motion.div
+        <div
           className={cn(showBorders && 'outline outline-red-300/50', className)}
           style={{ width: containerMeasure?.width }}
-          layout
-          transition={{
-            duration: s(0.5),
-            type: 'spring',
-            bounce: 0,
-          }}
         >
           {/* measure the width and height of the content, and use is as the */}
           <div ref={contentMeasureRef} className={cn(isSmall && 'w-fit', !isSmall && 'w-full')}>
@@ -72,7 +66,7 @@ export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, cl
               <MemoizedThinkingStep data={currentData} currentStep={currentStep} key={currentStep} />
             </AnimatePresence>
           </div>
-        </motion.div>
+        </div>
       </motion.div>
     </>
   );
