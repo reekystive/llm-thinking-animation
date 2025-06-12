@@ -8,7 +8,7 @@ import type {
 import { useAppAnimationControl } from '#src/providers/animation-control.tsx';
 import { cn } from '#src/utils/cn.ts';
 import { useMeasure } from '@react-hookz/web';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, cubicBezier, motion } from 'motion/react';
 import { FC, forwardRef, memo } from 'react';
 import { LightSweepText } from './light-sweep-text.tsx';
 import { MemoizedParagraphs } from './paragraph.tsx';
@@ -150,7 +150,6 @@ const ThinkingStepStartThinking = forwardRef<
         bounce: 0,
         ...(disableAllAnimations && { duration: 0 }),
       }}
-      layout
       key={stepKey}
       ref={ref}
     >
@@ -181,7 +180,6 @@ const ThinkingStepEnd = forwardRef<
         bounce: 0,
         ...(disableAllAnimations && { duration: 0 }),
       }}
-      layout
       key={stepKey}
       ref={ref}
     >
@@ -199,11 +197,10 @@ const ThinkingStepPlaintext = forwardRef<
   return (
     <motion.div
       className={cn(
-        'flex flex-col items-start px-4 py-3',
+        'flex w-full flex-col items-start px-4 py-3',
         showBorders && 'outline outline-yellow-400/50',
         disableAllAnimations && 'transition-none'
       )}
-      layout
       key={stepKey}
       ref={ref}
     >
@@ -223,14 +220,22 @@ const ThinkingStepPlaintext = forwardRef<
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 1, y: -8, filter: 'blur(1px)' }}
+        initial={{ opacity: 0, y: -12, filter: 'blur(1px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-        exit={{ opacity: 0, y: 0, filter: 'blur(2px)' }}
+        exit={{ opacity: 0, y: 0, filter: 'blur(4px)' }}
         transition={{
-          duration: s(0.75),
-          type: 'spring',
-          bounce: 0,
-          ...(disableAllAnimations && { duration: 0 }),
+          default: {
+            duration: s(0.75),
+            type: 'spring',
+            bounce: 0,
+            ...(disableAllAnimations && { duration: 0 }),
+          },
+          y: {
+            type: 'tween',
+            duration: s(0.6),
+            ease: cubicBezier(0.1, 1, 0.8, 1),
+            ...(disableAllAnimations && { duration: 0 }),
+          },
         }}
         className="flex w-full flex-col gap-2 pb-1"
       >
@@ -249,7 +254,7 @@ const ThinkingStepSearch = forwardRef<
   return (
     <motion.div
       className={cn(
-        'flex flex-col items-start px-4 py-3',
+        'flex w-full flex-col items-start px-4 py-3',
         showBorders && 'outline outline-yellow-400/50',
         disableAllAnimations && 'transition-none'
       )}
@@ -277,14 +282,22 @@ const ThinkingStepSearch = forwardRef<
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 0, y: -2, filter: 'blur(1px)' }}
+        initial={{ opacity: 0, y: -12, filter: 'blur(1px)' }}
         animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-        exit={{ opacity: 0, y: 0, filter: 'blur(1px)' }}
+        exit={{ opacity: 0, y: 0, filter: 'blur(4px)' }}
         transition={{
-          duration: s(0.75),
-          type: 'spring',
-          bounce: 0,
-          ...(disableAllAnimations && { duration: 0 }),
+          default: {
+            duration: s(0.75),
+            type: 'spring',
+            bounce: 0,
+            ...(disableAllAnimations && { duration: 0 }),
+          },
+          y: {
+            type: 'tween',
+            duration: s(0.6),
+            ease: cubicBezier(0.1, 1, 0.8, 1),
+            ...(disableAllAnimations && { duration: 0 }),
+          },
         }}
         className="mx-[-2px] flex w-[calc(100%+4px)] flex-wrap gap-1 pb-1"
       >
