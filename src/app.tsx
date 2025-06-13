@@ -13,6 +13,7 @@ export const App: FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [currentData, setCurrentData] = useState<ThinkingData | undefined>(mockData[0]);
   const { getAnimationDuration: s } = useAppAnimationControl();
+  const [count, setCount] = useState(0);
 
   const handleStepChange = useCallback((step: number) => {
     setCurrentStep(step);
@@ -34,7 +35,7 @@ export const App: FC = () => {
       </div>
 
       <div className="mb-2 flex w-full max-w-2xl flex-col items-center gap-2 sm:mb-4">
-        <MemoizedAnimationControl />
+        <MemoizedAnimationControl onRemountClick={() => setCount((c) => (c + 1) % 10)} />
       </div>
 
       <div className="mb-2 w-full max-w-2xl sm:mb-4">
@@ -46,7 +47,7 @@ export const App: FC = () => {
       </div>
 
       <div className="w-full max-w-2xl">
-        <ThinkingBox currentData={currentData} currentStep={currentStep} />
+        <ThinkingBox key={count} currentData={currentData} currentStep={currentStep} />
       </div>
 
       <div className="mt-2 flex w-full items-center justify-center sm:mt-4">

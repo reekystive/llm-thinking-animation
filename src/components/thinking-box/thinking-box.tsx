@@ -8,8 +8,8 @@ import type {
 import { useAppAnimationControl } from '#src/providers/animation-control.tsx';
 import { cn } from '#src/utils/cn.ts';
 import { useMeasure } from '@react-hookz/web';
-import { AnimatePresence, cubicBezier, motion } from 'motion/react';
-import { FC, forwardRef, memo } from 'react';
+import { AnimatePresence, cubicBezier, motion, useAnimationControls } from 'motion/react';
+import { FC, forwardRef, memo, RefCallback, useCallback, useLayoutEffect, useRef } from 'react';
 import { LightSweepText } from './light-sweep-text.tsx';
 import { MemoizedParagraphs } from './paragraph.tsx';
 import { SearchItem } from './search-item.tsx';
@@ -24,9 +24,34 @@ export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, cl
   const { getAnimationDuration: s, showBorders } = useAppAnimationControl();
   const [contentMeasure, contentMeasureRef] = useMeasure<HTMLDivElement>(true);
   const [containerMeasure, containerMeasureRef] = useMeasure<HTMLDivElement>(true);
+  const immediateContentWidth = useRef<number | undefined>(undefined);
+
+  // immediate content measure is only for first mount while the useMeasure is still undefined
+  const immediateContentMeasureRef: RefCallback<HTMLDivElement> = useCallback(
+    (node) => {
+      if (!node) {
+        return;
+      }
+      contentMeasureRef.current = node;
+      immediateContentWidth.current = node.getBoundingClientRect().width;
+    },
+    [contentMeasureRef]
+  );
 
   const isSmall = currentData?.type === 'start-thinking' || currentData?.type === 'end';
-  const hideThinkingBoxBorder = currentData?.type === 'start-thinking' || currentData?.type === 'end';
+  const hideThinkingBoxBorder = currentData?.type === 'end';
+
+  const controls = useAnimationControls();
+  useLayoutEffect(() => {
+    if (contentMeasure?.width === undefined) {
+      controls.set({ width: immediateContentWidth.current });
+      return;
+    }
+    void controls.start({
+      height: contentMeasure.height,
+      width: contentMeasure.width,
+    });
+  }, [contentMeasure?.height, contentMeasure?.width, controls]);
 
   return (
     <>
@@ -36,10 +61,7 @@ export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, cl
       {/* animated container with adaptive width (measured from the content) */}
       <motion.div
         className={cn('relative overflow-clip rounded-lg')}
-        animate={{
-          height: contentMeasure?.height,
-          width: contentMeasure?.width,
-        }}
+        animate={controls}
         transition={{
           duration: s(0.5),
           type: 'spring',
@@ -61,7 +83,7 @@ export const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep, cl
           style={{ width: containerMeasure?.width }}
         >
           {/* measure the width and height of the content, and use is as the */}
-          <div ref={contentMeasureRef} className={cn(isSmall && 'w-fit', !isSmall && 'w-full')}>
+          <div ref={immediateContentMeasureRef} className={cn(isSmall && 'w-fit', !isSmall && 'w-full')}>
             <AnimatePresence initial={false} mode="popLayout">
               <MemoizedThinkingStep data={currentData} currentStep={currentStep} key={currentStep} />
             </AnimatePresence>
