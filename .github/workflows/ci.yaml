@@ -55,6 +55,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: Build and deploy to GitHub Pages
+    if: github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout repository
