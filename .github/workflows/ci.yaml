@@ -80,41 +80,36 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    name: Push to gh-pages branch
+    name: Deploy to GitHub Pages
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     needs:
       - lint
       - test
       - build
 
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          lfs: false
-
-      - name: Delete local gh-pages branch if exists
-        run: git branch -D gh-pages
-        continue-on-error: true
-
-      - name: Create gh-pages branch
-        run: git checkout --orphan gh-pages
-
       - name: Download build output
         uses: actions/download-artifact@v4
         with:
           name: gh-pages
           path: ${{ github.workspace }}
 
-      - name: Configure Git user
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "github-actions@github.com"
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
 
-      - name: Commit build output
-        run: |
-          git add --all
-          git commit -m "Deploy build to gh-pages branch"
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${{ github.workspace }}
 
-      - name: Push to gh-pages branch
-        run: git push origin gh-pages --force-with-lease
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
