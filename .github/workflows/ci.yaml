@@ -79,3 +79,6 @@ jobs:
 
       - name: Deploy to GitHub Pages
         run: pnpm run deploy
+
+      - name: Push to gh-pages branch
+        run: git push origin gh-pages --force-with-lease
