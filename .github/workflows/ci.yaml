@@ -52,7 +52,7 @@ jobs:
       - name: Run tests
         run: pnpm run test
 
-  deploy:
+  build:
     runs-on: ubuntu-latest
     name: Build
     if: github.ref == 'refs/heads/main'
@@ -78,7 +78,7 @@ jobs:
           name: gh-pages
           path: dist
 
-  deploy-gh-pages:
+  deploy:
     runs-on: ubuntu-latest
     name: Deploy to GitHub Pages
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -94,6 +94,7 @@ jobs:
     needs:
       - lint
       - test
+      - build
 
     steps:
       - name: Deploy to GitHub Pages
