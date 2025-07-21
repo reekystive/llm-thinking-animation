@@ -69,7 +69,7 @@ thinkingRef.current?.addContent({ title: '...', content: '...' });
 
 ## 🎨 Core Animation Techniques
 
-### 1. Dynamic Size Container with Layout Animation
+### Dynamic Size Container with Layout Animation
 
 The most complex part of this implementation is the auto-sizing container that smoothly animates between different content sizes.
 
@@ -117,7 +117,7 @@ const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep }) => {
 };
 ```
 
-### 2. Breaking Layout Dependency Cycles
+### Breaking Layout Dependency Cycles
 
 **The Problem:** When creating a container that needs both a border and size animation, there are two architectural choices, both with tradeoffs:
 
@@ -183,34 +183,106 @@ const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep }) => {
 
 This architectural choice prioritizes visual polish (border + clipping) over implementation simplicity, solving the layout cycle through careful width management.
 
-### 3. Advanced Motion API Usage
+### Motion Library: Declarative vs Imperative Patterns
 
-#### useAnimationControls for Programmatic Animation
+This project showcases both declarative and imperative Motion API usage, each serving different purposes:
+
+#### Declarative Motion (Preferred for Most Animations)
 
 ```typescript
+// Most animations use declarative initial/animate pattern
+<motion.div
+  initial={{ opacity: 0, y: 10 }}
+  animate={{ opacity: 1, y: 0 }}
+  exit={{ opacity: 0, y: -10 }}
+  transition={{ duration: 0.3, type: 'spring' }}
+>
+  Content
+</motion.div>
+
+// CSS-based animations with style prop
+<motion.div
+  style={{
+    maskImage: getMaskImage(),
+    maskSize: `${pMaskWidthRelativeToText}% 100%`,
+  }}
+  animate={{
+    maskPosition: `${getMaskPositionPercent(0)}% 0%`,
+  }}
+  transition={{ duration: 2, repeat: Infinity }}
+>
+  Light sweep text
+</motion.div>
+```
+
+**Benefits of Declarative:**
+
+- Predictable animation states
+- Easy to reason about
+- Automatic cleanup on unmount
+- Works seamlessly with AnimatePresence
+
+#### Imperative Motion (For Dynamic Measurements)
+
+```typescript
+// When animation values come from measurements/calculations
 import { useAnimationControls } from 'motion/react';
 
 const controls = useAnimationControls();
 
-// Immediate update (no animation)
-controls.set({ width: immediateWidth });
+useLayoutEffect(() => {
+  if (contentMeasure?.width === undefined) {
+    // Immediate update (no animation)
+    controls.set({ width: immediateContentWidth.current });
+    return;
+  }
 
-// Animated update
-controls.start({
-  height: contentMeasure.height,
-  width: contentMeasure.width,
-});
+  // Animated update based on measured values
+  void controls.start({
+    height: contentMeasure.height,
+    width: contentMeasure.width,
+  });
+}, [contentMeasure?.height, contentMeasure?.width]);
 ```
 
-#### Custom Spring Transitions
+**When to Use Imperative:**
+
+- Animation values come from DOM measurements
+- Complex conditional animation logic
+- Integration with external data sources
+- Performance-critical updates
+
+#### AnimatePresence for Enter/Exit Animations
+
+This project makes extensive use of `AnimatePresence` to handle smooth transitions between different thinking steps:
 
 ```typescript
-transition={{
-  duration: s(0.5),      // Scaled by user preference
-  type: 'spring',
-  bounce: 0,             // No bounce for professional feel
-}}
+// Main container uses AnimatePresence for step transitions
+<AnimatePresence initial={false} mode="popLayout">
+  <MemoizedThinkingStep
+    data={currentData}
+    currentStep={currentStep}
+    key={currentStep}  // Key change triggers exit/enter
+  />
+</AnimatePresence>
+
+// Individual text elements also use AnimatePresence
+<AnimatePresence initial={true}>
+  <motion.div
+    initial={{ maskPosition: '-130% 0%' }}
+    animate={{ maskPosition: '0% 0%' }}
+    transition={{ duration: s(durationInSeconds), repeat: Infinity }}
+  >
+    {content}
+  </motion.div>
+</AnimatePresence>
 ```
+
+**AnimatePresence Configuration:**
+
+- `mode="popLayout"`: Prevents layout shift during transitions
+- `initial={false}`: Skips initial animation on first mount
+- `key` prop: Ensures proper exit/enter cycle when data changes
 
 #### Complex Stagger Animations
 
@@ -218,8 +290,10 @@ transition={{
 // src/components/thinking-box/paragraph.tsx
 const renderParagraph = (paragraph: string, previousDuration: number) => {
   const slices = splitByVisibleCharacterGroups(paragraph, SPLIT_UNIT);
+
   return slices.map((slice, index) => (
     <motion.span
+      key={index}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{
@@ -235,7 +309,38 @@ const renderParagraph = (paragraph: string, previousDuration: number) => {
 };
 ```
 
-### 4. Light Sweep Text Effect
+**Stagger Pattern Benefits:**
+
+- Each text chunk animates independently
+- Cumulative delay creates typewriter effect
+- Configurable timing through constants
+
+#### Custom Transition Configurations
+
+```typescript
+// Spring transitions for organic feel
+transition={{
+  duration: s(0.5),      // Scaled by user preference
+  type: 'spring',
+  bounce: 0,             // No bounce for professional feel
+}}
+
+// Multi-property transitions with different easings
+transition={{
+  default: {
+    duration: s(0.75),
+    type: 'spring',
+    bounce: 0,
+  },
+  y: {
+    type: 'tween',
+    duration: s(0.5),
+    ease: cubicBezier(0.1, 1, 0.8, 1),  // Custom cubic-bezier
+  },
+}}
+```
+
+### Light Sweep Text Effect
 
 A sophisticated CSS mask-based animation that creates a shimmer effect:
 
