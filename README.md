@@ -78,11 +78,24 @@ The most complex part of this implementation is the auto-sizing container that s
 const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep }) => {
   const [contentMeasure, contentMeasureRef] = useMeasure<HTMLDivElement>(true);
   const [containerMeasure, containerMeasureRef] = useMeasure<HTMLDivElement>(true);
+  const immediateContentWidth = useRef<number | undefined>(undefined);
+
+  // Critical timing: immediate measurement before useLayoutEffect
+  const immediateContentMeasureRef: RefCallback<HTMLDivElement> = useCallback(
+    (node) => {
+      if (!node) return;
+      contentMeasureRef.current = node;
+      // Capture width IMMEDIATELY when DOM node is available
+      immediateContentWidth.current = node.getBoundingClientRect().width;
+    },
+    [contentMeasureRef]
+  );
 
   const controls = useAnimationControls();
 
   useLayoutEffect(() => {
     if (contentMeasure?.width === undefined) {
+      // Use immediate measurement to prevent flash of wrong size
       controls.set({ width: immediateContentWidth.current });
       return;
     }
@@ -105,7 +118,8 @@ const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep }) => {
       >
         {/* Fixed width inner container prevents layout cycles */}
         <div style={{ width: containerMeasure?.width }}>
-          <div ref={contentMeasureRef}>
+          {/* Immediate measurement ref combines both measurement systems */}
+          <div ref={immediateContentMeasureRef}>
             <AnimatePresence initial={false} mode="popLayout">
               <MemoizedThinkingStep data={currentData} currentStep={currentStep} key={currentStep} />
             </AnimatePresence>
@@ -116,6 +130,52 @@ const ThinkingBox: FC<ThinkingBoxProps> = ({ currentData, currentStep }) => {
   );
 };
 ```
+
+#### Timing-Critical Measurement Strategy
+
+**The Challenge:** React's measurement hooks (`useMeasure`) are asynchronous, but we need immediate size information to prevent visual flashing during the first render.
+
+**The Solution:** Dual measurement system with careful timing:
+
+1. **Immediate Measurement** (`immediateContentMeasureRef`):
+
+   ```typescript
+   const immediateContentMeasureRef: RefCallback<HTMLDivElement> = useCallback(
+     (node) => {
+       if (!node) return;
+       contentMeasureRef.current = node;
+       // CRITICAL: Capture width synchronously when DOM node mounts
+       immediateContentWidth.current = node.getBoundingClientRect().width;
+     },
+     [contentMeasureRef]
+   );
+   ```
+
+2. **Reactive Measurement** (`useMeasure` hook):
+
+   ```typescript
+   useLayoutEffect(() => {
+     if (contentMeasure?.width === undefined) {
+       // First render: use immediate measurement
+       controls.set({ width: immediateContentWidth.current });
+       return;
+     }
+     // Subsequent renders: use reactive measurement for animations
+     void controls.start({
+       height: contentMeasure.height,
+       width: contentMeasure.width,
+     });
+   }, [contentMeasure?.height, contentMeasure?.width]);
+   ```
+
+**Execution Order:**
+
+1. Component renders → DOM node created
+2. `immediateContentMeasureRef` fires → captures `getBoundingClientRect()`
+3. `useLayoutEffect` fires → uses immediate measurement if `useMeasure` not ready
+4. `useMeasure` resolves → triggers animated transitions
+
+This prevents the "flash of wrong size" that would occur if we only relied on the asynchronous `useMeasure` hook.
 
 ### Breaking Layout Dependency Cycles
 
